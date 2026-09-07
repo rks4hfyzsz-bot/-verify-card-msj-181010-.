@@ -3,36 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>تحقق البطاقة | خالد بن فهد</title>
-  <meta name="description" content="صفحة تحقق عامة لبطاقة تعريف وظيفية" />
+  <title>التحقق من البطاقة</title>
+  <meta name="description" content="صفحة تحقق من بطاقة تعريف وظيفية" />
   <style>
-    :root{--bg:#f8f4ec;--surface:#fffdf9;--surface2:#f1eadf;--text:#16241d;--muted:#5b645f;--green1:#0b3c30;--green2:#0f5a46;--gold:#b88a2b;--border:rgba(23,38,31,.12)}
-    *{box-sizing:border-box} body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#efe7da);color:var(--text);min-height:100vh;display:grid;place-items:center;padding:24px}
-    .card{width:min(760px,100%);background:var(--surface);border:1px solid var(--border);border-radius:28px;box-shadow:0 18px 50px rgba(14,26,20,.10);overflow:hidden}
-    .hero{background:linear-gradient(135deg,var(--green1),var(--green2));color:#fff;padding:28px}.badge{display:inline-block;padding:8px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);font-size:14px;margin-bottom:14px}
-    h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px)} .sub{margin:0;color:rgba(255,255,255,.88);font-size:16px}.body{padding:24px}
-    .ok{margin-top:18px;padding:18px;border-radius:20px;border:1px dashed rgba(15,90,70,.25);background:rgba(15,90,70,.04)}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}.item{background:#fff;border:1px solid var(--border);border-radius:18px;padding:14px}.item small{display:block;color:var(--muted);margin-bottom:6px}.item strong{font-size:18px}
-    .foot{margin-top:18px;padding:14px 16px;background:var(--surface2);border-radius:16px;color:var(--muted);font-size:14px}
-    a.btn{display:inline-block;margin-top:18px;background:linear-gradient(135deg,var(--gold),#d1a245);color:#fff;text-decoration:none;padding:12px 18px;border-radius:14px;font-weight:700}
-    @media (max-width:640px){.grid{grid-template-columns:1fr}.hero,.body{padding:18px}}
+    :root{
+      --bg:#f6f2ea;
+      --surface:#fffdf9;
+      --line:#d9d2c7;
+      --text:#1a241f;
+      --muted:#66706a;
+      --green:#124d3b;
+      --green2:#0c3a2d;
+      --okbg:#f5faf6;
+      --okbd:#bdd6c4;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Tahoma,Arial,sans-serif;
+      background:linear-gradient(180deg,#f7f3ec,#efe8dc);
+      color:var(--text);
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:18px;
+    }
+    .wrap{
+      width:min(760px,100%);
+      background:var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:30px;
+      box-shadow:0 18px 50px rgba(14,26,20,.08);
+      overflow:hidden;
+    }
+    .hero{
+      background:linear-gradient(135deg,var(--green2),var(--green));
+      color:#fff;
+      padding:26px;
+    }
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(28px,5vw,42px);
+    }
+    .hero p{
+      margin:0;
+      color:rgba(255,255,255,.88);
+      font-size:16px;
+    }
+    .body{padding:22px}
+    .ok{
+      background:var(--okbg);
+      border:1px dashed var(--okbd);
+      color:#1f3c2b;
+      padding:16px 18px;
+      border-radius:18px;
+      font-size:18px;
+      line-height:1.7;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-top:18px;
+    }
+    .item{
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:18px 20px;
+      background:#fff;
+    }
+    .label{
+      display:block;
+      color:#6a6d6b;
+      font-size:15px;
+      margin-bottom:10px;
+    }
+    .value{
+      font-size:22px;
+      font-weight:700;
+      line-height:1.5;
+    }
+    .foot{
+      margin-top:18px;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+    @media (min-width:700px){
+      .grid{grid-template-columns:1fr 1fr}
+      .item.full{grid-column:1/-1}
+    }
   </style>
 </head>
 <body>
-  <main class="card">
+  <main class="wrap">
     <section class="hero">
-      <div class="badge">ا • تحقق البطاقة</div>
       <h1>تم التحقق من البطاقة</h1>
-      <p class
+      <p>البطاقة صالحة والبيانات مطابقة لسجل التحقق المعتمد.</p>
     </section>
     <section class="body">
       <div class="ok"><strong>حالة التحقق:</strong> البطاقة صالحة والبيانات مطابقة لرقم البطاقة <strong>MSJ-181010</strong>.</div>
       <div class="grid">
-        <div class="item"><small>الاسم</small><strong>خالد بن فهد</strong></div>
-        <div class="item"><small>نوع البطاقة</small><strong>بطاقة تعريف وظيفية</strong></div>
-        <div class="item"><small>المسمى الوظيفي</small><strong>محامي | أخصائي قانوني</strong></div>
-        <div class="item"><small>الإدارة</small><strong>التشغيل القضائي</strong></div>
-        <div class="item"><small>المنطقة</small><strong>الرياض</strong></div>
-        <div class="item"><small>الرقم الوظيفي</small><strong>181010</strong></
+        <div class="item"><span class="label">الاسم</span><div class="value">خالد بن فهد</div></div>
+        <div class="item"><span class="label">نوع البطاقة</span><div class="value">بطاقة تعريف وظيفية</div></div>
+        <div class="item full"><span class="label">المسمى الوظيفي</span><div class="value">محامي | أخصائي قانوني</div></div>
+        <div class="item"><span class="label">الإدارة</span><div class="value">التشغيل القضائي</div></div>
+        <div class="item"><span class="label">المنطقة</span><div class="value">الرياض</div></div>
+        <div class="item full"><span class="label">الرقم الوظيفي</span><div class="value">181010</div></div>
+      </div>
+      <div class="foot">هذه الصفحة مخصصة للتحقق من صحة البطاقة الوظيفية.</div>
+    </section>
+  </main>
 </body>
 </html>
