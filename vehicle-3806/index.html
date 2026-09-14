@@ -1,157 +1,199 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>استمارة مركبة</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :.page{
-  width:min(100%,760px);
-  margin:0 auto;
-  padding:16px 12px 28px;
-}
+    :root{
+      --bg:#f5f3ee;
+      --card:#fcfbf8;
+      --line:#e6dfd3;
+      --text:#14211d;
+      --muted:#6f756f;
+      --green-1:#0d725f;
+      --green-2:#13876b;
+      --green-3:#1f9b77;
+      --shadow:0 14px 40px rgba(0,0,0,.10);
+    }
 
-.hero{
-  background:linear-gradient(135deg,var(--green-1),var(--green-2) 55%,var(--green-3));
-  border-radius:30px;
-  padding:22px 18px 18px;
-  box-shadow:var(--shadow);
-  color:#fff;
-  text-align:center;
-}
+    *{box-sizing:border-box}
 
-.seal{
-  width:96px;
-  height:96px;
-  margin:0 auto 14px;
-  border-radius:50%;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(255,255,255,.12);
-  border:2px solid rgba(255,255,255,.18);
-  box-shadow:
-    inset 0 0 0 6px rgba(255,255,255,.05),
-    0 8px 20px rgba(0,0,0,.10);
-}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
+    }
 
-.hero-title{
-  margin:0;
-  font-size:17px;
-  font-weight:700;
-  opacity:.96;
-}
+    .page{
+      width:min(100%,760px);
+      margin:0 auto;
+      padding:18px 12px 30px;
+    }
 
-.hero-sub{
-  margin:6px 0 0;
-  font-size:13px;
-  opacity:.88;
-}
+    .hero{
+      background:linear-gradient(135deg,var(--green-1),var(--green-2) 55%,var(--green-3));
+      border-radius:30px;
+      padding:24px 18px 20px;
+      box-shadow:var(--shadow);
+      color:#fff;
+      text-align:center;
+    }
 
-.content{
-  padding:20px 4px 0;
-}
+    .seal{
+      width:96px;
+      height:96px;
+      margin:0 auto 14px;
+      border-radius:50%;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,.14);
+      border:2px solid rgba(255,255,255,.18);
+      box-shadow:
+        inset 0 0 0 6px rgba(255,255,255,.05),
+        0 10px 24px rgba(0,0,0,.12);
+    }
 
-h1{
-  margin:0 0 8px;
-  font-size:clamp(28px,5vw,48px);
-  line-height:1.15;
-  font-weight:800;
-  text-align:right;
-  color:var(--text);
-}
+    .seal img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
 
-.lead{
-  margin:0;
-  font-size:15px;
-  line-height:1.8;
-  color:#303833;
-  text-align:right;
-}
+    .hero-title{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+      line-height:1.5;
+    }
 
-.lead + .lead{
-  margin-top:4px;
-}
+    .hero-sub{
+      margin:6px 0 0;
+      font-size:14px;
+      line-height:1.7;
+      opacity:.92;
+    }
 
-.panel{
-  margin-top:18px;
-  background:rgba(255,255,255,.82);
-  border:1px solid var(--line);
-  border-radius:22px;
-  box-shadow:0 8px 22px rgba(0,0,0,.05);
-  overflow:hidden;
-}
+    .content{
+      padding:22px 4px 0;
+    }
 
-.panel-head{
-  padding:14px 16px 10px;
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,#fff,#fbfaf7);
-}
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(30px,5vw,56px);
+      line-height:1.12;
+      font-weight:900;
+      color:var(--text);
+    }
 
-.panel-body{
-  padding:4px 16px 12px;
-}
+    .lead{
+      margin:0;
+      font-size:15px;
+      line-height:1.9;
+      color:#2f3631;
+    }
 
-.row{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid #efeadf;
-}
+    .lead + .lead{
+      margin-top:2px;
+    }
 
-.key{
-  min-width:110px;
-  font-size:13px;
-  color:var(--muted);
-  font-weight:700;
-}
+    .panel{
+      margin-top:20px;
+      background:rgba(255,255,255,.80);
+      border:1px solid var(--line);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 10px 28px rgba(0,0,0,.05);
+    }
 
-.value{
-  flex:1;
-  text-align:left;
-  font-size:17px;
-  line-height:1.6;
-  font-weight:700;
-  color:var(--text);
-}
+    .panel-head{
+      padding:16px 18px 12px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fff,#faf8f4);
+    }
 
-.value.small{
-  font-size:16px;
-}
+    .label{
+      margin:0;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:800;
+    }
 
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  background:#eef7f2;
-  color:#176548;
-  border:1px solid #d6eadf;
-  border-radius:999px;
-  padding:6px 10px;
-  font-size:13px;
-  font-weight:700;
-}
+    .panel-body{
+      padding:6px 18px 14px;
+    }
+
+    .row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 0;
+      border-bottom:1px solid #efe8dd;
+    }
+
+    .row:last-child{
+      border-bottom:none;
+    }
+
+    .key{
+      min-width:130px;
+      font-size:14px;
+      line-height:1.7;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .value{
+      flex:1;
+      text-align:left;
+      font-size:18px;
+      line-height:1.7;
+      color:var(--text);
+      font-weight:800;
+    }
+
+    .value.small{
+      font-size:16px;
+      font-weight:700;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef7f2;
+      color:#176548;
+      border:1px solid #d0e6da;
+      border-radius:999px;
+      padding:7px 14px;
+      font-size:14px;
+      font-weight:800;
+      line-height:1.3;
+    }
 
     @media (max-width:640px){
-  .page{padding:14px 10px 24px}
-  .hero{padding:18px 14px 16px;border-radius:26px}
-  .seal{width:88px;height:88px;margin-bottom:12px}
-  h1{font-size:26px}
-  .lead{font-size:14px}
-  .panel-body{padding:4px 14px 10px}
-  .panel-head{padding:12px 14px 8px}
-  .row{flex-direction:column;gap:4px;padding:10px 0}
-  .key{min-width:auto}
-  .value{text-align:right;font-size:16px}
-  .value.small{font-size:15px}
-  .badge{font-size:12px;padding:6px 10px}
-}
+      .page{padding:14px 10px 24px}
+      .hero{padding:20px 14px 16px;border-radius:28px}
+      .seal{width:88px;height:88px;margin-bottom:12px}
+      .hero-title{font-size:16px}
+      .hero-sub{font-size:13px}
+      .content{padding:18px 4px 0}
+      h1{font-size:28px;margin-bottom:8px}
+      .lead{font-size:14px}
+      .panel{margin-top:18px;border-radius:22px}
+      .panel-head{padding:14px 14px 10px}
+      .panel-body{padding:4px 14px 10px}
+      .row{flex-direction:column;gap:4px;padding:12px 0}
+      .key{min-width:auto;font-size:13px}
+      .value{text-align:right;font-size:16px}
+      .value.small{font-size:15px}
+      .badge{font-size:13px;padding:7px 12px}
+    }
   </style>
 </head>
 <body>
@@ -159,7 +201,6 @@ h1{
     <section class="hero">
       <div class="seal">
         <img src="IMG_7592.jpeg" alt="شعار مساندون">
-
       </div>
       <p class="hero-title">شعار مساندون</p>
       <p class="hero-sub">عرض منسق لبيانات الاستمارة</p>
@@ -172,28 +213,54 @@ h1{
 
       <div class="panel">
         <div class="panel-head">
-          <p class="label">الجهة المالكة</p>
+          <p class="label">بيانات التفويض والمركبة</p>
         </div>
+
         <div class="panel-body">
           <div class="row">
-            <div class="key">الاسم</div>
-            <div class="value">مؤسسة رمز التحقق للخدمات</div>
+            <div class="key">المفوض له</div>
+            <div class="value small">ديوان وزارة العدل ( تشغيل قضائي لنيابات والمحاكم )</div>
+          </div>
+
+          <div class="row">
+            <div class="key">رقم الهوية</div>
+            <div class="value">7001661086</div>
+          </div>
+
+          <div class="row">
+            <div class="key">المسمى الوظيفي</div>
+            <div class="value small">أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي</div>
+          </div>
+
+          <div class="row">
+            <div class="key">اسم المستفيد أو السائق</div>
+            <div class="value small">خالد بن فهد LEGAL AFFAIRS</div>
+          </div>
+
+          <div class="row">
+            <div class="key">نوع المركبة</div>
+            <div class="value">شيفرولية تاهو</div>
+          </div>
+
+          <div class="row">
+            <div class="key">الموديل</div>
+            <div class="value">2023</div>
+          </div>
+
+          <div class="row">
+            <div class="key">اللون</div>
+            <div class="value">أسود</div>
           </div>
 
           <div class="row">
             <div class="key">رقم اللوحة</div>
-            <div class="value">3806</div>
-          </div>
-
-          <div class="row">
-            <div class="key">نوع التسجيل</div>
-            <div class="value small">استمارة مركبة</div>
+            <div class="value">ر ر ط 5661</div>
           </div>
 
           <div class="row">
             <div class="key">حالة العرض</div>
             <div class="value">
-              <span class="badge"><span class="dot"></span>تم التحقق بنجاح</span>
+              <span class="badge">تم التحقق بنجاح</span>
             </div>
           </div>
         </div>
