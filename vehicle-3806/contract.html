@@ -81,7 +81,7 @@
             opacity: .9;
         }
 
-        .navigation {
+        .actions {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -89,8 +89,7 @@
             margin: 18px 0;
         }
 
-        .navigation a,
-        .print-button {
+        .action-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -109,8 +108,7 @@
             transition: .2s ease;
         }
 
-        .navigation a:hover,
-        .print-button:hover {
+        .action-button:hover {
             background: var(--light-green);
             transform: translateY(-1px);
         }
@@ -175,7 +173,7 @@
             overflow-wrap: anywhere;
         }
 
-        .data-value.ltr {
+        .ltr {
             direction: ltr;
             text-align: left;
             font-family: Arial, sans-serif;
@@ -273,7 +271,7 @@
                 font-size: 15px;
             }
 
-            .data-value.ltr,
+            .ltr,
             .iban {
                 text-align: right;
             }
@@ -285,8 +283,7 @@
                 text-align: right;
             }
 
-            .navigation a,
-            .print-button {
+            .action-button {
                 flex: 1 1 42%;
                 font-size: 13px;
             }
@@ -315,6 +312,7 @@
 </head>
 
 <body>
+
     <main class="page">
 
         <section class="top-card">
@@ -326,17 +324,17 @@
             <p>العقد التشغيلي</p>
         </section>
 
-        <nav class="navigation no-print">
-            <a href="index.html">
-                <i class="fa-solid fa-car"></i>
-                صفحة المركبة
-            </a>
-
-            <button class="print-button" onclick="window.print()">
+        <div class="actions no-print">
+            <button class="action-button" onclick="window.print()">
                 <i class="fa-solid fa-print"></i>
                 طباعة الصفحة
             </button>
-        </nav>
+
+            <button class="action-button" onclick="downloadPage()">
+                <i class="fa-solid fa-download"></i>
+                تحميل الصفحة
+            </button>
+        </div>
 
         <section class="section-card">
             <div class="section-title">
@@ -345,6 +343,7 @@
             </div>
 
             <div class="data-list">
+
                 <div class="data-row">
                     <div class="data-label">رقم العقد</div>
                     <div class="data-value ltr">
@@ -393,18 +392,20 @@
                         تحويل بنكي
                     </div>
                 </div>
+
             </div>
         </section>
 
         <section class="section-card">
             <div class="section-title">
                 <i class="fa-solid fa-user-tie"></i>
-                بيانات المستفيد والمستخدم
+                بيانات المستخدم
             </div>
 
             <div class="data-list">
+
                 <div class="data-row">
-                    <div class="data-label">المستفيد / المستخدم</div>
+                    <div class="data-label"> المستخدم</div>
                     <div class="data-value highlight">
                         خالد الخياري
                     </div>
@@ -416,6 +417,7 @@
                         1124763093
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -426,6 +428,7 @@
             </div>
 
             <div class="data-list">
+
                 <div class="data-row">
                     <div class="data-label">الجهة المستأجرة</div>
                     <div class="data-value highlight">
@@ -453,6 +456,7 @@
                         SA24 8000 0273 6080 1041 9174
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -475,14 +479,43 @@
             <i class="fa-solid fa-circle-info"></i>
 
             <span>
-                هذه الصفحة مخصصة لعرض بيانات الجهة المستحقة وبيانات العقد التشغيلي.
-                يرجى مراجعة العقد والجهات المختصة قبل اعتماد أو تنفيذ أي تحويل مالي.
+           تم اعتماد المبلغ المستحق لشركة مجموعة محمد الصافي وشركاة التجارية
+
             </span>
         </div>
 
         <footer class="footer">
             بيانات العقد التشغيلي — جميع الحقوق محفوظة
         </footer>
+
     </main>
+
+    <script>
+        function downloadPage() {
+            const content =
+                '<!DOCTYPE html>\n' +
+                document.documentElement.outerHTML;
+
+            const blob = new Blob(
+                [content],
+                { type: 'text/html;charset=utf-8' }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = 'بيانات_العقد_التشغيلي.html';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 1000);
+        }
+    </script>
+
 </body>
 </html>
