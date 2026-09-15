@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>بيانات الجهة المستحقة - العقد التشغيلي</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #006c35;
+            --dark-green: #004b25;
+            --gold: #d4af37;
+            --background: #f3f6f4;
+            --card: #ffffff;
+            --text: #17211d;
+            --muted: #6b746f;
+            --border: #dfe8e2;
+            --light-green: #eaf6ef;
+            --shadow: 0 14px 35px rgba(0, 70, 35, .10);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, rgba(0,108,53,.08), transparent 40%),
+                var(--background);
+            color: var(--text);
+            font-family: "Cairo", sans-serif;
+        }
+
+        .page {
+            width: min(100%, 820px);
+            margin: 0 auto;
+            padding: 18px 14px 35px;
+        }
+
+        .top-card {
+            background: linear-gradient(135deg, #004b25, #006c35 58%, #159464);
+            color: white;
+            border-radius: 28px;
+            padding: 26px 22px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .top-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.25);
+            font-size: 31px;
+        }
+
+        .top-card h1 {
+            margin: 0;
+            font-size: clamp(24px, 5vw, 38px);
+            line-height: 1.35;
+            font-weight: 900;
+        }
+
+        .top-card p {
+            margin: 8px 0 0;
+            font-size: 15px;
+            opacity: .9;
+        }
+
+        .navigation {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .navigation a,
+        .print-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 42px;
+            padding: 9px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--green);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .navigation a:hover,
+        .print-button:hover {
+            background: var(--light-green);
+            transform: translateY(-1px);
+        }
+
+        .section-card {
+            margin-top: 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 17px 20px;
+            background: linear-gradient(180deg, #ffffff, #f5faf7);
+            border-bottom: 1px solid var(--border);
+            color: var(--green);
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .section-title i {
+            color: var(--gold);
+        }
+
+        .data-list {
+            padding: 5px 20px 13px;
+        }
+
+        .data-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf1ee;
+        }
+
+        .data-row:last-child {
+            border-bottom: 0;
+        }
+
+        .data-label {
+            min-width: 170px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.8;
+        }
+
+        .data-value {
+            flex: 1;
+            color: var(--text);
+            text-align: left;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        .data-value.ltr {
+            direction: ltr;
+            text-align: left;
+            font-family: Arial, sans-serif;
+        }
+
+        .highlight {
+            color: var(--green);
+            font-weight: 900;
+        }
+
+        .amount {
+            color: #a16207;
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .iban {
+            direction: ltr;
+            text-align: left;
+            color: var(--green);
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: .4px;
+        }
+
+        .statement {
+            margin: 0;
+            padding: 20px;
+            color: #303b35;
+            font-size: 16px;
+            line-height: 2.15;
+            text-align: justify;
+        }
+
+        .notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 18px;
+            padding: 15px 17px;
+            border-radius: 16px;
+            background: #fff9e8;
+            border: 1px solid #f0df9c;
+            color: #6b5410;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .notice i {
+            padding-top: 4px;
+            color: var(--gold);
+        }
+
+        .footer {
+            padding: 22px 0 0;
+            color: var(--muted);
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 620px) {
+            .page {
+                padding: 12px 10px 25px;
+            }
+
+            .top-card {
+                border-radius: 24px;
+                padding: 22px 15px;
+            }
+
+            .top-card h1 {
+                font-size: 25px;
+            }
+
+            .data-list {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .data-row {
+                display: block;
+                padding: 13px 0;
+            }
+
+            .data-label {
+                min-width: auto;
+                margin-bottom: 3px;
+                font-size: 13px;
+            }
+
+            .data-value {
+                text-align: right;
+                font-size: 15px;
+            }
+
+            .data-value.ltr,
+            .iban {
+                text-align: right;
+            }
+
+            .statement {
+                padding: 16px;
+                font-size: 15px;
+                line-height: 2;
+                text-align: right;
+            }
+
+            .navigation a,
+            .print-button {
+                flex: 1 1 42%;
+                font-size: 13px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .page {
+                width: 100%;
+                padding: 0;
+            }
+
+            .section-card,
+            .top-card {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+
+        <section class="top-card">
+            <div class="top-icon">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+
+            <h1>بيانات الجهة المستحقة</h1>
+            <p>العقد التشغيلي</p>
+        </section>
+
+        <nav class="navigation no-print">
+            <a href="index.html">
+                <i class="fa-solid fa-car"></i>
+                صفحة المركبة
+            </a>
+
+            <button class="print-button" onclick="window.print()">
+                <i class="fa-solid fa-print"></i>
+                طباعة الصفحة
+            </button>
+        </nav>
+
+        <section class="section-card">
+            <div class="section-title">
+                <i class="fa-solid fa-file-contract"></i>
+                بيانات العقد
+            </div>
+
+            <div class="data-list">
+                <div class="data-row">
+                    <div class="data-label">رقم العقد</div>
+                    <div class="data-value ltr">
+                        2608981595910001
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">تاريخ العقد</div>
+                    <div class="data-value">
+                        28/01/2026م
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">مدة العقد</div>
+                    <div class="data-value">
+                        سنة واحدة، مع إمكانية التجديد لسنة إضافية
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">طبيعة العقد</div>
+                    <div class="data-value">
+                        عقد تشغيلي لجهات قانونية
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">قيمة العقد السنوية</div>
+                    <div class="data-value amount">
+                        96,000 ريال سعودي
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">دورية السداد</div>
+                    <div class="data-value">
+                        سنوية
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">طريقة السداد</div>
+                    <div class="data-value">
+                        تحويل بنكي
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-title">
+                <i class="fa-solid fa-user-tie"></i>
+                بيانات المستفيد والمستخدم
+            </div>
+
+            <div class="data-list">
+                <div class="data-row">
+                    <div class="data-label">المستفيد / المستخدم</div>
+                    <div class="data-value highlight">
+                        خالد الخياري
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">رقم الهوية</div>
+                    <div class="data-value ltr">
+                        1124763093
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-title">
+                <i class="fa-solid fa-building"></i>
+                بيانات الجهات
+            </div>
+
+            <div class="data-list">
+                <div class="data-row">
+                    <div class="data-label">الجهة المستأجرة</div>
+                    <div class="data-value highlight">
+                        مساندون
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">رقم الجهة</div>
+                    <div class="data-value ltr">
+                        10109450940
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">الجهة المستفيدة من التحويل</div>
+                    <div class="data-value">
+                        شركة مجموعة محمد الصافي وشركاه التجارية
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="data-label">الآيبان</div>
+                    <div class="data-value iban">
+                        SA24 8000 0273 6080 1041 9174
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-title">
+                <i class="fa-solid fa-file-signature"></i>
+                بيان الاستحقاق
+            </div>
+
+            <p class="statement">
+                تستحق الجهة المبيّنة أعلاه المبالغ المالية الناشئة عن العقد التشغيلي للمستأجر،
+                وذلك وفقًا للقيمة المتفق عليها ومواعيد الاستحقاق المحددة في العقد، وبما يشمل
+                الالتزامات المالية المتعلقة بالتشغيل والخدمات المقررة للجهات القانونية، على أن
+                يتم سداد المستحقات سنويًا عن طريق التحويل البنكي إلى الحساب المصرفي المحدد أعلاه،
+                وذلك طوال مدة العقد وأي مدة تجديد معتمدة وفقًا لشروطه وأحكامه.
+            </p>
+        </section>
+
+        <div class="notice">
+            <i class="fa-solid fa-circle-info"></i>
+
+            <span>
+                هذه الصفحة مخصصة لعرض بيانات الجهة المستحقة وبيانات العقد التشغيلي.
+                يرجى مراجعة العقد والجهات المختصة قبل اعتماد أو تنفيذ أي تحويل مالي.
+            </span>
+        </div>
+
+        <footer class="footer">
+            بيانات العقد التشغيلي — جميع الحقوق محفوظة
+        </footer>
+    </main>
+</body>
+</html>
