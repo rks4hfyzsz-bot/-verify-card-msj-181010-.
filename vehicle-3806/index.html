@@ -1,271 +1,170 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>استمارة مركبة</title>
-  <style>
-    :root{
-      --bg:#f5f3ee;
-      --card:#fcfbf8;
-      --line:#e6dfd3;
-      --text:#14211d;
-      --muted:#6f756f;
-      --green-1:#0d725f;
-      --green-2:#13876b;
-      --green-3:#1f9b77;
-      --shadow:0 14px 40px rgba(0,0,0,.10);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    *{box-sizing:border-box}
+    <title>تعريف راتب - نموذج عرض تجريبي</title>
 
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
+          rel="stylesheet">
 
-    .page{
-      width:min(100%,760px);
-      margin:0 auto;
-      padding:18px 12px 30px;
-    }
+    <style>
+        :root {
+            --navy: #071827;
+            --gold: #d7b36a;
+            --background: #f3f5f4;
+            --white: #ffffff;
+            --text: #17211d;
+            --muted: #6d756f;
+            --border: #dfe5e1;
+            --green: #136b4e;
+            --warning-bg: #fff8e7;
+            --warning-border: #ead28a;
+            --shadow: 0 18px 45px rgba(0, 0, 0, .10);
+        }
 
-    .hero{
-      background:linear-gradient(135deg,var(--green-1),var(--green-2) 55%,var(--green-3));
-      border-radius:30px;
-      padding:24px 18px 20px;
-      box-shadow:var(--shadow);
-      color:#fff;
-      text-align:center;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .seal{
-      width:96px;
-      height:96px;
-      margin:0 auto 14px;
-      border-radius:50%;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,.14);
-      border:2px solid rgba(255,255,255,.18);
-      box-shadow:
-        inset 0 0 0 6px rgba(255,255,255,.05),
-        0 10px 24px rgba(0,0,0,.12);
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top right, rgba(215,179,106,.14), transparent 30%),
+                linear-gradient(145deg, #edf1ef, #fafaf8);
+            color: var(--text);
+            font-family: "Cairo", sans-serif;
+        }
 
-    .seal img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
+        .page {
+            width: min(100%, 850px);
+            margin: 0 auto;
+            padding: 20px 14px 38px;
+        }
 
-    .hero-title{
-      margin:0;
-      font-size:18px;
-      font-weight:800;
-      line-height:1.5;
-    }
+        .hero {
+            background: linear-gradient(135deg, #071827, #102b3d 60%, #185540);
+            border-radius: 28px;
+            padding: 32px 20px 28px;
+            text-align: center;
+            color: white;
+            box-shadow: var(--shadow);
+        }
 
-    .hero-sub{
-      margin:6px 0 0;
-      font-size:14px;
-      line-height:1.7;
-      opacity:.92;
-    }
+        .hero-icon {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(215,179,106,.16);
+            border: 1px solid rgba(215,179,106,.55);
+            color: var(--gold);
+            font-size: 34px;
+        }
 
-    .content{
-      padding:22px 4px 0;
-    }
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(26px, 6vw, 43px);
+            line-height: 1.4;
+            font-weight: 900;
+        }
 
-    h1{
-      margin:0 0 10px;
-      font-size:clamp(30px,5vw,56px);
-      line-height:1.12;
-      font-weight:900;
-      color:var(--text);
-    }
+        .hero p {
+            margin: 8px 0 0;
+            color: #eee8d9;
+            font-size: 15px;
+            line-height: 1.8;
+        }
 
-    .lead{
-      margin:0;
-      font-size:15px;
-      line-height:1.9;
-      color:#2f3631;
-    }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 8px 15px;
+            border-radius: 999px;
+            background: rgba(215,179,106,.16);
+            border: 1px solid rgba(215,179,106,.50);
+            color: #f2d995;
+            font-size: 13px;
+            font-weight: 800;
+        }
 
-    .lead + .lead{
-      margin-top:2px;
-    }
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #f2d995;
+        }
 
-    .panel{
-      margin-top:20px;
-      background:rgba(255,255,255,.80);
-      border:1px solid var(--line);
-      border-radius:24px;
-      overflow:hidden;
-      box-shadow:0 10px 28px rgba(0,0,0,.05);
-    }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 18px 0;
+        }
 
-    .panel-head{
-      padding:16px 18px 12px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,#fff,#faf8f4);
-    }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 43px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            color: var(--navy);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+            transition: .2s ease;
+        }
 
-    .label{
-      margin:0;
-      font-size:14px;
-      color:var(--muted);
-      font-weight:800;
-    }
+        .button:hover {
+            transform: translateY(-1px);
+            background: #f0f3f1;
+        }
 
-    .panel-body{
-      padding:6px 18px 14px;
-    }
+        .card {
+            margin-top: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 23px;
+            background: rgba(255,255,255,.94);
+            box-shadow: var(--shadow);
+        }
 
-    .row{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      padding:14px 0;
-      border-bottom:1px solid #efe8dd;
-    }
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 17px 20px;
+            background: linear-gradient(180deg, #ffffff, #f5f8f6);
+            border-bottom: 1px solid var(--border);
+            color: var(--navy);
+            font-size: 18px;
+            font-weight: 900;
+        }
 
-    .row:last-child{
-      border-bottom:none;
-    }
+        .card-title::before {
+            content: "";
+            width: 8px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--gold);
+        }
 
-    .key{
-      min-width:130px;
-      font-size:14px;
-      line-height:1.7;
-      color:var(--muted);
-      font-weight:800;
-    }
+        .data {
+            padding: 6px 20px 15px;
+        }
 
-    .value{
-      flex:1;
-      text-align:left;
-      font-size:18px;
-      line-height:1.7;
-      color:var(--text);
-      font-weight:800;
-    }
-
-    .value.small{
-      font-size:16px;
-      font-weight:700;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      background:#eef7f2;
-      color:#176548;
-      border:1px solid #d0e6da;
-      border-radius:999px;
-      padding:7px 14px;
-      font-size:14px;
-      font-weight:800;
-      line-height:1.3;
-    }
-
-    @media (max-width:640px){
-      .page{padding:14px 10px 24px}
-      .hero{padding:20px 14px 16px;border-radius:28px}
-      .seal{width:88px;height:88px;margin-bottom:12px}
-      .hero-title{font-size:16px}
-      .hero-sub{font-size:13px}
-      .content{padding:18px 4px 0}
-      h1{font-size:28px;margin-bottom:8px}
-      .lead{font-size:14px}
-      .panel{margin-top:18px;border-radius:22px}
-      .panel-head{padding:14px 14px 10px}
-      .panel-body{padding:4px 14px 10px}
-      .row{flex-direction:column;gap:4px;padding:12px 0}
-      .key{min-width:auto;font-size:13px}
-      .value{text-align:right;font-size:16px}
-      .value.small{font-size:15px}
-      .badge{font-size:13px;padding:7px 12px}
-    }
-  </style>
-</head>
-<body>
-  <main class="page">
-    <section class="hero">
-      <div class="seal">
-        <img src="IMG_7592.jpeg" alt="شعار مساندون">
-      </div>
-      <p class="hero-title">هـيئـة مساندون</p>
-      <p class="hero-sub"> بيانات الاستمارة</p>
-    </section>
-
-    <section class="content">
-      <h1>استمارة مركبة</h1>
-      <p class="lead">المملكة العربية السعودية</p>
-      <p class="lead">تم عرض بيانات الاستمارة بنجاح</p>
-
-      <div class="panel">
-        <div class="panel-head">
-          <p class="label">بيانات التفويض والمركبة</p>
-        </div>
-
-        <div class="panel-body">
-          <div class="row">
-            <div class="key">المفوض له</div>
-            <div class="value small">ديوان وزارة العدل ( تشغيل قضائي لنيابات والمحاكم )</div>
-          </div>
-
-          <div class="row">
-            <div class="key">رقم الهوية</div>
-            <div class="value">7001661086</div>
-          </div>
-
-          <div class="row">
-            <div class="key">المسمى الوظيفي</div>
-            <div class="value small">أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي</div>
-          </div>
-
-          <div class="row">
-            <div class="key">اسم المستفيد أو السائق</div>
-            <div class="value small">خالد بن فهد LEGAL AFFAIRS</div>
-          </div>
-
-          <div class="row">
-            <div class="key">نوع المركبة</div>
-            <div class="value">شيفرولية تاهو</div>
-          </div>
-
-          <div class="row">
-            <div class="key">الموديل</div>
-            <div class="value">2023</div>
-          </div>
-
-          <div class="row">
-            <div class="key">اللون</div>
-            <div class="value">أسود</div>
-          </div>
-
-          <div class="row">
-            <div class="key">رقم اللوحة</div>
-            <div class="value">ر ر ط 5661</div>
-          </div>
-
-          <div class="row">
-            <div class="key">حالة العرض</div>
-            <div class="value">
-              <span class="badge">تم التحقق بنجاح</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-</body>
-</html>
+        .row {
+            dis
