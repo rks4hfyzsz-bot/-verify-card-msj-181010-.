@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>استمارة المركبة</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;600;700&display=swap"
+          rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --green: #006c35;
+            --dark-green: #004b25;
+            --gold: #d4af37;
+            --background: #0f172a;
+            --card: #1e293b;
+            --white: #ffffff;
+            --muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f8fafc;
+            font-family: "Cairo", sans-serif;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .page {
+            width: min(100%, 900px);
+            margin: auto;
+            padding: 18px 14px 35px;
+        }
+
+        .heading {
+            margin-bottom: 18px;
+            padding: 22px 18px;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 24px;
+            background: linear-gradient(135deg, #071827, #102b3d 60%, #126b4e);
+            text-align: center;
+            box-shadow: 0 18px 40px rgba(0,0,0,.22);
+        }
+
+        .heading-icon {
+            width: 62px;
+            height: 62px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(212,175,55,.55);
+            border-radius: 50%;
+            background: rgba(212,175,55,.14);
+            color: var(--gold);
+            font-size: 26px;
+        }
+
+        .heading h1 {
+            margin: 0;
+            color: white;
+            font-size: clamp(25px, 6vw, 39px);
+            font-weight: 900;
+        }
+
+        .heading p {
+            margin: 6px 0 0;
+            color: #d9e5df;
+            font-size: 14px;
+        }
+
+        .notice {
+            margin-top: 12px;
+            padding: 9px 12px;
+            border: 1px solid rgba(234,210,138,.5);
+            border-radius: 12px;
+            background: rgba(255,248,231,.10);
+            color: #f6df9b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .instructions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 12px 14px;
+            border: 1px solid rgba(71,85,105,.8);
+            border-radius: 15px;
+            background: rgba(30,41,59,.65);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .instructions span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions i {
+            color: var(--gold);
+        }
+
+        .flip-button {
+            border: 0;
+            background: transparent;
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .card-scene {
+            width: 100%;
+            max-width: 650px;
+            aspect-ratio: 1.586 / 1;
+            margin: 0 auto;
+            perspective: 1100px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform .8s cubic-bezier(.175,.885,.32,1.275);
+        }
+
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            border-radius: 22px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-front {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 22px;
+            color: #0f172a;
+            border: 2px solid #cbd5e1;
+            background:
+                radial-gradient(circle at 90% 8%, rgba(212,175,55,.25), transparent 23%),
+                linear-gradient(135deg, #f8fafc, #f1f5f9 55%, #e2e8f0);
+            box-shadow: 0 24px 55px rgba(0,0,0,.3);
+        }
+
+        .card-front::before {
+            content: "";
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            left: -75px;
+            bottom: -85px;
+            border: 18px solid rgba(0,108,53,.08);
+            border-radius: 50%;
+        }
+
+        .card-back {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 22px;
+            color: white;
+            border: 2px solid #475569;
+            background: linear-gradient(135deg, #0f172a, #1e293b 55%, #111827);
+            transform: rotateY(180deg);
+            box-shadow: 0 24px 55px rgba(0,0,0,.4);
+        }
+
+        .card-header,
+        .card-footer {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-header {
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(100,116,139,.48);
+        }
+
+        .arabic-title {
+            color: #475569;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .arabic-subtitle {
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .shield {
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,108,53,.27);
+            border-radius: 50%;
+            background: rgba(0,108,53,.10);
+            color: var(--green);
+            font-size: 20px;
+        }
+
+        .english-title {
+            direction: ltr;
+            text-align: left;
+            color: #64748b;
+            font-family: Inter, Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .8px;
+        }
+
+        .english-title strong {
+            display: block;
+            margin-top: 3px;
+            color: var(--green);
+            font-size: 11px;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: auto 0;
+            padding: 13px 0;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 4px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .field-value {
+            color: #0f172a;
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1.7;
+        }
+
+        .field-value i {
+            margin-left: 4px;
+            color: var(--green);
+            font-size: 11px;
+        }
+
+        .plate-box {
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid #f2d58b;
+            border-radius: 14px;
+            background: linear-gradient(90deg, #fff8e1, #ecfdf5);
+        }
+
+        .plate-number {
+            color: #0f172a;
+            font-size: clamp(22px, 4vw, 32px);
+            font-weight: 900;
+            letter-spacing: 7px;
+            line-height: 1.2;
+        }
+
+        .plate-latin {
+            padding-right: 12px;
+            border-right: 1px solid #f2d58b;
+            direction: ltr;
+            text-align: left;
+            color: #92400e;
+            font-family: Inter, Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .private-label {
+            display: block;
+            width: fit-content;
+            margin-top: 5px;
+            padding: 3px 7px;
+            border-radius: 5px;
+            background: rgba(16,185,129,.18);
+            color: #065f46;
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .card-footer {
+            padding-top: 11px;
+            border-top: 1px solid rgba(100,116,139,.48);
+        }
+
+        .expiry {
+            display: inline-block;
+            margin-top: 3px;
+            padding: 3px 7px;
+            border: 1px solid #fecaca;
+            border-radius: 5px;
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .id-block {
+            direction: ltr;
+            text-align: left;
+            color: #64748b;
+            font-family: Inter, Arial, sans-serif;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .id-block strong {
+            display: block;
+            margin-top: 3px;
+            color: #1e293b;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .back-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #334155;
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .back-code {
+            color: #94a3b8;
+            direction: ltr;
+            font-family: Inter, Arial, sans-serif;
+            font-size: 10px;
+        }
+
+        .back-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .back-field {
+            padding: 9px;
+            border: 1px solid #334155;
+            border-radius: 9px;
+            background: rgba(30,41,59,.78);
+        }
+
+        .back-field span {
+            display: block;
+            margin-bottom: 3px;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .back-field strong {
+            color: #6ee7b7;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .barcode-box {
+            padding: 11px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: inset 0 0 10px rgba(0,0,0,.12);
+        }
+
+        #barcode {
+            width: 100%;
+            max-height: 60px;
+        }
+
+        .barcode-number {
+            display: block;
+            margin-top: 3px;
+            direction: ltr;
+            text-align: center;
+            color: #334155;
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .back-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-top: 9px;
+            border-top: 1px solid #1e293b;
+            color: #94a3b8;
+            font-size: 10px;
+        }
+
+        .demo-label {
+            color: #fcd34d;
+            font-weight: 900;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 650px;
+            margin: 17px auto 0;
+        }
+
+        .button {
+            min-height: 44px;
+            padding: 9px 10px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: var(--green);
+            color: white;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .button:hover {
+            background: var(--dark-green);
+            transform: translateY(-1px);
+        }
+
+        .copy-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 650px;
+            margin: 15px auto 0;
+        }
+
+        .copy-button {
+            min-height: 65px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(30,41,59,.9);
+            color: #e2e8f0;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .copy-button i {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--gold);
+            font-size: 17px;
+        }
+
+        .panel {
+            margin-top: 18px;
+            padding: 18px;
+            border: 1px solid rgba(71,85,105,.78);
+            border-radius: 19px;
+            background: rgba(30,41,59,.65);
+            box-shadow: 0 14px 30px rgba(0,0,0,.12);
+        }
+
+        .panel-title {
+            margin: 0 0 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            color: white;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .panel-title i {
+            margin-left: 6px;
+            color: var(--gold);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(71,85,105,.5);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .detail-row:last-child {
+            border-bottom: 0;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        .detail-value {
+            max-width: 65%;
+            color: white;
+            text-align: left;
+            font-weight: 900;
+        }
+
+        .detail-value.gold {
+            color: var(--gold);
+        }
+
+        .detail-value.red {
+            color: #f87171;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .status-item {
+            padding: 12px 5px;
+            border-radius: 10px;
+            background: rgba(15,23,42,.72);
+            text-align: center;
+        }
+
+        .status-number {
+            display: block;
+            color: var(--gold);
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .status-item:nth-child(2) .status-number {
+            color: #34d399;
+        }
+
+        .status-item:nth-child(3) .status-number {
+            color: #60a5fa;
+        }
+
+        .status-label {
+            color: #94a3b8;
+            font-size: 10px;
+        }
+
+        .warning {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border: 1px solid rgba(234,210,138,.6);
+            border-radius: 14px;
+            background: rgba(255,248,231,.10);
+            color: #f6df9b;
+            font-size: 12px;
+            line-height: 1.9;
+            text-align: center;
+        }
+
+        .footer {
+            padding: 18px 0 0;
+            color: #94a3b8;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 50;
+            padding: 12px 15px;
+            border-radius: 12px;
+            background: #059669;
+            color: white;
+            font-size: 12px;
+            font-weight: 800;
+            opacity: 0;
+            transform: translateY(70px);
+            pointer-events: none;
+            transition: .3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 640px) {
+            .page {
+                padding: 12px 10px 28px;
+            }
+
+            .heading {
+                border-radius: 21px;
+                padding: 20px 13px;
+            }
+
+            .instructions {
+                display: block;
+                line-height: 1.9;
+            }
+
+            .flip-button {
+                display: block;
+                margin-top: 6px;
+            }
+
+            .card-front,
+            .card-back {
+                border-radius: 16px;
+                padding: 14px;
+            }
+
+            .arabic-title {
+                font-size: 9px;
+            }
+
+            .arabic-subtitle {
+                font-size: 8px;
+            }
+
+            .shield {
+                width: 32px;
+                height: 32px;
+                font-size: 15px;
+            }
+
+            .english-title {
+                font-size: 7px;
+            }
+
+            .english-title strong {
+                font-size: 8px;
+            }
+
+            .card-content {
+                gap: 7px;
+                padding: 7px 0;
+            }
+
+            .field-label {
+                font-size: 8px;
+            }
+
+            .field-value {
+                font-size: 9px;
+            }
+
+            .plate-box {
+                padding: 8px;
+            }
+
+            .plate-number {
+                font-size: 17px;
+                letter-spacing: 3px;
+            }
+
+            .plate-latin {
+                padding-right: 6px;
+                font-size: 8px;
+            }
+
+            .private-label {
+                font-size: 7px;
+            }
+
+            .expiry {
+                font-size: 8px;
+            }
+
+            .id-block {
+                font-size: 7px;
+            }
+
+            .id-block strong {
+                font-size: 9px;
+            }
+
+            .back-title {
+                font-size: 10px;
+            }
+
+            .back-code {
+                font-size: 7px;
+            }
+
+            .back-fields {
+                gap: 5px;
+                margin: 7px 0;
+            }
+
+            .back-field {
+                padding: 5px;
+            }
+
+            .back-field span {
+                font-size: 7px;
+            }
+
+            .back-field strong {
+                font-size: 8px;
+            }
+
+            .barcode-box {
+                padding: 5px;
+            }
+
+            .barcode-number {
+                font-size: 7px;
+            }
+
+            .back-footer {
+                font-size: 7px;
+            }
+
+            .buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .copy-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .copy-button:last-child {
+                grid-column: span 2;
+            }
+
+            .detail-row {
+                gap: 8px;
+                font-size: 12px;
+            }
+
+            .detail-value {
+                max-width: 60%;
+            }
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .no-print,
+            .instructions,
+            .panel,
+            .warning,
+            .footer,
+            .heading {
+                display: none !important;
+            }
+
+            .page {
+                width: 100%;
+                padding: 0;
+            }
+
+            .card-scene {
+                max-width: 760px;
+                margin: 20px auto;
+            }
+
+            .card-inner {
+                transform: none !important;
+            }
+
+            .card-front {
+                position: relative;
+                box-shadow: none;
+                border: 1px solid #999;
+            }
+
+            .card-back {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="page">
+
+        <header class="heading no-print">
+            <div class="heading-icon">
+                <i class="fa-solid fa-car"></i>
+            </div>
+
+            <h1>استمارة المركبة</h1>
+
+            <p>
+                نموذج عرض تجريبي لبيانات المركبة
+            </p>
+
+            <div class="notice">
+                هذه الصفحة نموذج عرض تجريبي وغير صالحة كوثيقة رسمية أو إثبات حكومي.
+            </div>
+        </header>
+
+        <div class="instructions no-print">
+            <span>
+                <i class="fa-solid fa-hand-pointer"></i>
+                اضغط على البطاقة لقلبها وعرض الباركود
+            </span>
+
+            <button class="flip-button" type="button" onclick="flipCard()">
+                <i class="fa-solid fa-rotate"></i>
+                قلب البطاقة
+            </button>
+        </div>
+
+        <div class="card-scene" onclick="flipCard()">
+
+            <div id="cardInner" class="card-inner">
+
+                <section class="card-front">
+
+                    <div class="card-header">
+
+                        <div>
+                            <div class="arabic-title">
+                                المملكة العربية السعودية
+                            </div>
+
+                            <div class="arabic-subtitle">
+                                نموذج استمارة مركبة
+                            </div>
+                        </div>
+
+                        <div class="shield">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <div class="english-title">
+                            VEHICLE REGISTRATION
+                            <strong>KSA ISTIMARA</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <div>
+                            <span class="field-label">المفوض له</span>
+
+                            <div class="field-value">
+                                <i class="fa-solid fa-building-columns"></i>
+                                جهة تشغيلية
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="field-label">المستفيد أو السائق</span>
+
+                            <div class="field-value">
+                                <i class="fa-solid fa-user"></i>
+                                خالد بن فهد
+                            </div>
+                        </div>
+
+                        <div class="plate-box">
+
+                            <div>
+                                <span class="field-label">رقم اللوحة</span>
+
+                                <div class="plate-number">
+                                    ر ر ط 5661
+                                </div>
+                            </div>
+
+                            <div class="plate-latin">
+                                5661 R R T
+                                <span class="private-label">خاصة</span>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            <span class="field-label">نوع المركبة</span>
+
+                            <div class="field-value">
+                                شيفرولية تاهو
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="field-label">اللون والموديل</span>
+
+                            <div class="field-value">
+                                <span style="
+                                    display:inline-block;
+                                    width:10px;
+                                    height:10px;
+                                    border-radius:50%;
+                                    background:#000;
+                                    border:1px solid #64748b;
+                                    vertical-align:middle;
+                                "></span>
+                                أسود - 2023
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+
+                        <div>
+                            <span class="field-label">تاريخ الانتهاء</span>
+
+                            <span class="expiry">
+                                16 / 07 / 2029 م
+                            </span>
+                        </div>
+
+                        <div class="id-block">
+                            ID NO
+                            <strong>7001661086</strong>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="card-back">
+
+                    <div>
+                        <div class="back-title">
+                            <span>
+                                <i class="fa-solid fa-microchip"></i>
+                                بيانات المركبة
+                            </span>
+
+                            <span class="back-code">
+                                VEHICLE DATA
+                            </span>
+                        </div>
+
+                        <div class="back-fields">
+
+                            <div class="back-field">
+                                <span>الجهة المفوضة</span>
+                                <strong>جهة تشغيلية</strong>
+                            </div>
+
+                            <div class="back-field">
+                                <span>المسمى الوظيفي</span>
+                                <strong>
+                                    أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي
+                                </strong>
+                            </div>
+
+                            <div class="back-field">
+                                <span>رقم الهوية</span>
+                                <strong style="direction:ltr; display:block;">
+                                    7001661086
+                                </strong>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="barcode-box">
+                        <svg id="barcode"></svg>
+
+                        <span class="barcode-number">
+                            56617001661086
+                        </span>
+                    </div>
+
+                    <div class="back-footer">
+                        <span>الرمز: KSA-REG-5661</span>
+
+                        <span class="demo-label">
+                            <i class="fa-solid fa-circle-info"></i>
+                            عرض تجريبي
+                        </span>
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+        <div class="buttons no-print">
+
+            <button class="button" type="button" onclick="flipCard()">
+                <i class="fa-solid fa-rotate"></i>
+                قلب البطاقة
+            </button>
+
+            <button class="button" type="button" onclick="downloadCardImage()">
+                <i class="fa-solid fa-image"></i>
+                تحميل صورة
+            </button>
+
+            <button class="button" type="button" onclick="window.print()">
+                <i class="fa-solid fa-print"></i>
+                طباعة
+            </button>
+
+            <button class="button" type="button" onclick="exportJSONData()">
+                <i class="fa-solid fa-file-code"></i>
+                تحميل JSON
+            </button>
+
+        </div>
+
+        <div class="copy-buttons no-print">
+
+            <button class="copy-button"
+                    type="button"
+                    onclick="copyText('7001661086', 'رقم الهوية')">
+                <i class="fa-regular fa-copy"></i>
+                نسخ رقم الهوية
+            </button>
+
+            <button class="copy-button"
+                    type="button"
+                    onclick="copyText('ر ر ط 5661', 'رقم اللوحة')">
+                <i class="fa-solid fa-car"></i>
+                نسخ رقم اللوحة
+            </button>
+
+            <button class="copy-button"
+                    type="button"
+                    onclick="copyText('16/07/2029', 'تاريخ الانتهاء')">
+                <i class="fa-solid fa-calendar-days"></i>
+                نسخ تاريخ الانتهاء
+            </button>
+
+        </div>
+
+        <section class="panel no-print">
+
+            <h2 class="panel-title">
+                <i class="fa-solid fa-list-check"></i>
+                تفاصيل الاستمارة
+            </h2>
+
+            <div class="detail-row">
+                <span class="detail-label">الجهة المفوضة:</span>
+                <span class="detail-value">جهة تشغيلية</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">القسم:</span>
+                <span class="detail-value">العمليات القانونية</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">رقم الهوية:</span>
+                <span class="detail-value">7001661086</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">المسمى الوظيفي:</span>
+                <span class="detail-value">
+                    أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي
+                </span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">المستفيد أو السائق:</span>
+                <span class="detail-value">خالد بن فهد</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">نوع المركبة:</span>
+                <span class="detail-value">شيفرولية تاهو</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">الموديل:</span>
+                <span class="detail-value">2023</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">لون المركبة:</span>
+                <span class="detail-value">أسود</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">رقم اللوحة:</span>
+                <span class="detail-value gold">ر ر ط 5661</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">تاريخ الانتهاء:</span>
+                <span class="detail-value red">16 / 07 / 2029</span>
+            </div>
+
+        </section>
+
+        <div class="warning no-print">
+            هذه الصفحة نموذج عرض تجريبي فقط، ولا تمثل استمارة حكومية أو وثيقة رسمية
+            ولا تصلح للإثبات أو الاعتماد لدى أي جهة.
+        </div>
+
+        <footer class="footer no-print">
+            نموذج عرض بيانات المركبة — غير صالح للاعتماد الرسمي
+        </footer>
+
+    </main>
+
+    <div id="toast" class="toast">
+        <span id="toastMessage">تم التنفيذ بنجاح</span>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            createBarcode();
+        });
+
+        function createBarcode() {
+            if (typeof JsBarcode === "undefined") {
+                return;
+            }
+
+            try {
+                JsBarcode("#barcode", "56617001661086", {
+                    format: "CODE128",
+                    lineColor: "#1e293b",
+                    width: 2,
+                    height: 45,
+                    displayValue: false,
+                    margin: 0
+                });
+            } catch (error) {
+                console.log("Barcode error:", error);
+            }
+        }
+
+        function flipCard() {
+            const card = document.getElementById("cardInner");
+
+            if (card) {
+                card.classList.toggle("flipped");
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            const toastMessage = document.getElementById("toastMessage");
+
+            if (!toast || !toastMessage) {
+                return;
+            }
+
+            toastMessage.innerText = message;
+            toast.classList.add("show");
+
+            setTimeout(function () {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+        function copyText(value, label) {
+            if (
+                navigator.clipboard &&
+                window.isSecureContext
+            ) {
+                navigator.clipboard.writeText(value)
+                    .then(function () {
+                        showToast("تم نسخ " + label);
+                    })
+                    .catch(function () {
+                        fallbackCopy(value, label);
+                    });
+            } else {
+                fallbackCopy(value, label);
+            }
+        }
+
+        function fallbackCopy(value, label) {
+            const textarea = document.createElement("textarea");
+
+            textarea.value = value;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try {
+                document.execCommand("copy");
+                showToast("تم نسخ " + label);
+            } catch (error) {
+                showToast("تعذر النسخ تلقائيًا");
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        function downloadCardImage() {
+            const card = document.querySelector(".card-front");
+
+            if (!card) {
+                showToast("تعذر العثور على البطاقة");
+                return;
+            }
+
+            if (typeof html2canvas === "undefined") {
+                showToast("أداة تحميل الصورة غير متاحة");
+                return;
+            }
+
+            showToast("جاري تجهيز الصورة");
+
+            html2canvas(card, {
+                scale: 3,
+                backgroundColor: null
+            })
+            .then(function (canvas) {
+                const link = document.createElement("a");
+
+                link.download = "استمارة_مركبة_ر_ر_ط_5661.png";
+                link.href = canvas.toDataURL("image/png");
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showToast("تم تحميل صورة الاستمارة");
+            })
+            .catch(function () {
+                showToast("تعذر تحميل الصورة");
+            });
+        }
+
+        function exportJSONData() {
+            const data = {
+                pageType: "نموذج استمارة مركبة",
+                authorizedEntity: "جهة تشغيلية",
+                department: "العمليات القانونية",
+                identityNumber: "7001661086",
+                jobTitle: "أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي",
+                beneficiary: "خالد بن فهد",
+                vehicle: "شيفرولية تاهو",
+                model: "2023",
+                color: "أسود",
+                plateNumber: "ر ر ط 5661",
+                expiryDate: "16/07/2029",
+                status: "بيانات عرض تجريبية"
+            };
+
+            const json = JSON.stringify(data, null, 2);
+
+            const blob = new Blob(
+                [json],
+                {
+                    type: "application/json;charset=utf-8"
+                }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "بيانات_الاستمارة_ر_ر_ط_5661.json";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 1000);
+
+            showToast("تم تحميل ملف البيانات");
+        }
+    </script>
+
+</body>
+</html>
