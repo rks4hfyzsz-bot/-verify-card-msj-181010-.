@@ -1,64 +1,74 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الصفحة الرئيسية</title>
+<script>
+function downloadCardImage(){
+  const card = document.querySelector('.panel');
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  if(typeof html2canvas === 'undefined'){
+    alert('لم يتم تحميل أداة حفظ الصورة بعد، حاول مرة أخرى.');
+    return;
+  }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #f3f4f6;
-      font-family: Arial, sans-serif;
-    }
+  html2canvas(card, {
+    scale:2,
+    useCORS:true,
+    backgroundColor:'#ffffff'
+  }).then(function(canvas){
+    const link = document.createElement('a');
+    link.download = 'بيانات_المركبة_3806.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
 
-    .container {
-      width: 90%;
-      max-width: 500px;
-      padding: 35px;
-      text-align: center;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-    }
+function downloadWalletFile(){
+  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], {
+    type:'text/html;charset=utf-8'
+  });
 
-    h1 {
-      margin-bottom: 25px;
-      color: #1f2937;
-    }
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'استمارة_مركبة_3806.html';
+  link.click();
 
-    .salary-button {
-      display: inline-block;
-      padding: 13px 28px;
-      background: #1d4ed8;
-      color: #ffffff;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 17px;
-      font-weight: bold;
-    }
+  setTimeout(function(){
+    URL.revokeObjectURL(link.href);
+  },1000);
+}
 
-    .salary-button:hover {
-      background: #1e40af;
-    }
-  </style>
-</head>
+function exportJSONData(){
+  const data = {
+    المفوض_له: 'ديوان وزارة العدل ( تشغيل قضائي لنيابات والمحاكم )',
+    رقم_الهوية: '7001661086',
+    المسمى_الوظيفي: 'أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي',
+    اسم_المستفيد_أو_السائق: 'خالد بن فهد LEGAL AFFAIRS',
+    نوع_المركبة: 'شيفرولية تاهو',
+    الموديل: '2023',
+    اللون: 'أسود',
+    رقم_اللوحة: 'ر ر ط 5661',
+    تاريخ_الانتهاء: '16/07/2029',
+    حالة_العرض: 'تم التحقق بنجاح'
+  };
 
-<body>
-  <main class="container">
-    <h1>الصفحة الرئيسية</h1>
+  const blob = new Blob(
+    [JSON.stringify(data, null, 2)],
+    {type:'application/json;charset=utf-8'}
+  );
 
-    <a href="salary.html" class="salary-button">
-      صفحة الراتب
-    </a>
-  </main>
-</body>
-</html>
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'بيانات_المركبة_3806.json';
+  link.click();
+
+  setTimeout(function(){
+    URL.revokeObjectURL(link.href);
+  },1000);
+}
+
+function flipCard(){
+  const card = document.querySelector('.card-inner');
+
+  if(card){
+    card.classList.toggle('flipped');
+  }
+}
+</script>
