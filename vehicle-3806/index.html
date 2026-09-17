@@ -4,24 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>تعريف راتب - نموذج عرض تجريبي</title>
+    <title>المحفظة الرقمية - استمارة المركبة</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Inter:wght@400;600;700&display=swap"
           rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
-            --navy: #071827;
-            --gold: #d7b36a;
-            --background: #f3f5f4;
+            --green: #006c35;
+            --dark-green: #004b25;
+            --gold: #d4af37;
+            --background: #0f172a;
+            --card: #1e293b;
             --white: #ffffff;
-            --text: #17211d;
-            --muted: #6d756f;
-            --border: #dfe5e1;
-            --green: #136b4e;
-            --warning-bg: #fff8e7;
-            --warning-border: #ead28a;
-            --shadow: 0 18px 45px rgba(0, 0, 0, .10);
+            --muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
         }
 
         * {
@@ -31,140 +36,14 @@
         body {
             margin: 0;
             min-height: 100vh;
-            background:
-                radial-gradient(circle at top right, rgba(215,179,106,.14), transparent 30%),
-                linear-gradient(145deg, #edf1ef, #fafaf8);
-            color: var(--text);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
             font-family: "Cairo", sans-serif;
         }
 
-        .page {
-            width: min(100%, 850px);
-            margin: 0 auto;
-            padding: 20px 14px 38px;
+        button,
+        a {
+            font-family: inherit;
         }
 
-        .hero {
-            background: linear-gradient(135deg, #071827, #102b3d 60%, #185540);
-            border-radius: 28px;
-            padding: 32px 20px 28px;
-            text-align: center;
-            color: white;
-            box-shadow: var(--shadow);
-        }
-
-        .hero-icon {
-            width: 82px;
-            height: 82px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(215,179,106,.16);
-            border: 1px solid rgba(215,179,106,.55);
-            color: var(--gold);
-            font-size: 34px;
-        }
-
-        .hero h1 {
-            margin: 0;
-            font-size: clamp(26px, 6vw, 43px);
-            line-height: 1.4;
-            font-weight: 900;
-        }
-
-        .hero p {
-            margin: 8px 0 0;
-            color: #eee8d9;
-            font-size: 15px;
-            line-height: 1.8;
-        }
-
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 16px;
-            padding: 8px 15px;
-            border-radius: 999px;
-            background: rgba(215,179,106,.16);
-            border: 1px solid rgba(215,179,106,.50);
-            color: #f2d995;
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .status-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #f2d995;
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin: 18px 0;
-        }
-
-        .button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 43px;
-            padding: 10px 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: white;
-            color: var(--navy);
-            font: inherit;
-            font-size: 14px;
-            font-weight: 800;
-            text-decoration: none;
-            cursor: pointer;
-            transition: .2s ease;
-        }
-
-        .button:hover {
-            transform: translateY(-1px);
-            background: #f0f3f1;
-        }
-
-        .card {
-            margin-top: 18px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            border-radius: 23px;
-            background: rgba(255,255,255,.94);
-            box-shadow: var(--shadow);
-        }
-
-        .card-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 17px 20px;
-            background: linear-gradient(180deg, #ffffff, #f5f8f6);
-            border-bottom: 1px solid var(--border);
-            color: var(--navy);
-            font-size: 18px;
-            font-weight: 900;
-        }
-
-        .card-title::before {
-            content: "";
-            width: 8px;
-            height: 28px;
-            border-radius: 8px;
-            background: var(--gold);
-        }
-
-        .data {
-            padding: 6px 20px 15px;
-        }
-
-        .row {
-            dis
+        .contain
