@@ -1,74 +1,858 @@
-<script>
-function downloadCardImage(){
-  const card = document.querySelector('.panel');
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحفظة الرقمية - استمارة المركبة</title>
 
-  if(typeof html2canvas === 'undefined'){
-    alert('لم يتم تحميل أداة حفظ الصورة بعد، حاول مرة أخرى.');
-    return;
-  }
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  html2canvas(card, {
-    scale:2,
-    useCORS:true,
-    backgroundColor:'#ffffff'
-  }).then(function(canvas){
-    const link = document.createElement('a');
-    link.download = 'بيانات_المركبة_3806.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  });
-}
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-function downloadWalletFile(){
-  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-  const blob = new Blob([html], {
-    type:'text/html;charset=utf-8'
-  });
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Inter:wght@400;600;700&display=swap"
+          rel="stylesheet">
 
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'استمارة_مركبة_3806.html';
-  link.click();
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 
-  setTimeout(function(){
-    URL.revokeObjectURL(link.href);
-  },1000);
-}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-function exportJSONData(){
-  const data = {
-    المفوض_له: 'ديوان وزارة العدل ( تشغيل قضائي لنيابات والمحاكم )',
-    رقم_الهوية: '7001661086',
-    المسمى_الوظيفي: 'أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي',
-    اسم_المستفيد_أو_السائق: 'خالد بن فهد LEGAL AFFAIRS',
-    نوع_المركبة: 'شيفرولية تاهو',
-    الموديل: '2023',
-    اللون: 'أسود',
-    رقم_اللوحة: 'ر ر ط 5661',
-    تاريخ_الانتهاء: '16/07/2029',
-    حالة_العرض: 'تم التحقق بنجاح'
-  };
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        saudi: {
+                            green: '#006C35',
+                            darkGreen: '#004B25',
+                            gold: '#D4AF37',
+                            lightGold: '#F4E8C1',
+                            accent: '#10B981'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 
-  const blob = new Blob(
-    [JSON.stringify(data, null, 2)],
-    {type:'application/json;charset=utf-8'}
-  );
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
 
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'بيانات_المركبة_3806.json';
-  link.click();
+        .perspective-1000 {
+            perspective: 1000px;
+        }
 
-  setTimeout(function(){
-    URL.revokeObjectURL(link.href);
-  },1000);
-}
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
 
-function flipCard(){
-  const card = document.querySelector('.card-inner');
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
 
-  if(card){
-    card.classList.toggle('flipped');
-  }
-}
-</script>
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.25rem;
+            overflow: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 32rem;
+            margin: 18px auto 0;
+        }
+
+        .action-buttons button {
+            min-height: 44px;
+            border: 0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            background: #006c35;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .action-buttons button:hover {
+            background: #004b25;
+        }
+
+        .action-buttons button:active {
+            transform: scale(.97);
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .card-inner {
+                transform: none !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .action-buttons {
+                padding: 0 10px;
+            }
+
+            .action-buttons button {
+                flex: 1 1 45%;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen antialiased selection:bg-saudi-gold selection:text-black">
+
+    <header class="no-print sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-saudi-green to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-saudi-green/30">
+                    <i class="fa-solid fa-wallet text-xl"></i>
+                </div>
+
+                <div>
+                    <h1 class="text-lg font-bold text-white leading-tight">
+                        المحفظة الرقمية
+                    </h1>
+                    <p class="text-xs text-slate-400">
+                        الاستمارة ورخصة السير المعتمدة
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    بطاقة موثقة
+                </span>
+
+                <button onclick="downloadWalletFile()"
+                        class="p-2 rounded-xl bg-saudi-green hover:bg-saudi-darkGreen text-white transition-all text-sm flex items-center gap-2 px-3 shadow-lg shadow-saudi-green/30">
+                    <i class="fa-solid fa-download"></i>
+                    <span class="hidden sm:inline">تحميل المحفظة</span>
+                </button>
+
+                <button onclick="window.print()"
+                        class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all text-sm flex items-center gap-2 px-3 border border-slate-700">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="hidden sm:inline">طباعة</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <section class="lg:col-span-7 flex flex-col items-center gap-6">
+
+            <div class="no-print w-full flex items-center justify-between text-sm text-slate-400 bg-slate-800/50 p-3 rounded-2xl border border-slate-700/50">
+                <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-hand-pointer text-saudi-gold animate-bounce"></i>
+                    انقر على البطاقة لقلبها لرؤية الباركود
+                </span>
+
+                <button onclick="flipCard()"
+                        class="text-saudi-gold hover:text-yellow-300 font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-rotate"></i>
+                    اقلب البطاقة
+                </button>
+            </div>
+
+            <div class="w-full max-w-lg aspect-[1.586/1] perspective-1000 cursor-pointer select-none group"
+                 onclick="flipCard()">
+
+                <div id="cardInner"
+                     class="card-inner shadow-2xl transition-all duration-500 group-hover:scale-[1.01]">
+
+                    <div class="card-front bg-gradient-to-br from-slate-100 via-stone-50 to-slate-200 text-slate-900 border-2 border-slate-300/80 shadow-2xl p-5 md:p-6 flex flex-col justify-between">
+
+                        <div class="flex items-start justify-between border-b border-slate-300/80 pb-3">
+
+                            <div class="text-right">
+                                <h2 class="text-xs font-bold text-slate-700 tracking-wide">
+                                    المملكة العربية السعودية
+                                </h2>
+                                <p class="text-[10px] font-semibold text-slate-500">
+                                    ديوان وزارة العدل - استمارة مركبة
+                                </p>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-saudi-green/10 border border-saudi-green/30 flex items-center justify-center text-saudi-green">
+                                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                                </div>
+                            </div>
+
+                            <div class="text-left font-inter">
+                                <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
+                                    VEHICLE REGISTRATION
+                                </span>
+                                <span class="text-xs font-extrabold text-saudi-green">
+                                    KSA ISTIMARA
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 my-auto py-1">
+
+                            <div>
+                                <span class="text-[11px] text-slate-500 font-bold block mb-0.5">
+                                    المفوض له
+                                </span>
+
+                                <p class="text-xs md:text-sm font-extrabold text-slate-900 flex items-start gap-1.5">
+                                    <i class="fa-solid fa-building-columns text-saudi-green text-xs mt-1"></i>
+                                    <span>ديوان وزارة العدل</span>
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="text-[11px] text-slate-500 font-bold block mb-0.5">
+                                    المستفيد أو السائق
+                                </span>
+
+                                <p class="text-xs md:text-sm font-extrabold text-slate-900 flex items-start gap-1.5">
+                                    <i class="fa-solid fa-user text-saudi-green text-xs mt-1"></i>
+                                    <span>خالد بن فهد</span>
+                                </p>
+                            </div>
+
+                            <div class="col-span-2 bg-gradient-to-r from-amber-50 to-emerald-50/60 p-2.5 rounded-xl border border-amber-200/80 flex items-center justify-between">
+
+                                <div>
+                                    <span class="text-[10px] text-amber-800 font-bold block">
+                                        رقم اللوحة
+                                    </span>
+
+                                    <p class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-widest font-cairo">
+                                        ر ر ط 5661
+                                    </p>
+                                </div>
+
+                                <div class="text-left font-inter border-r border-amber-200 pl-3 pr-2">
+                                    <span class="text-[10px] text-amber-800 font-bold block">
+                                        5661 R R T
+                                    </span>
+
+                                    <span class="text-xs font-bold text-emerald-800 bg-emerald-200/60 px-2 py-0.5 rounded">
+                                        خاصة
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="text-[10px] text-slate-500 font-bold block">
+                                    نوع المركبة
+                                </span>
+
+                                <p class="text-xs md:text-sm font-bold text-slate-800">
+                                    شيفرولية تاهو
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="text-[10px] text-slate-500 font-bold block">
+                                    اللون والموديل
+                                </span>
+
+                                <p class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-1">
+                                    <span class="w-3 h-3 rounded-full bg-black border border-slate-400 inline-block shadow-sm"></span>
+                                    أسود - 2023
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-300/80 flex items-center justify-between text-[11px]">
+
+                            <div>
+                                <span class="text-slate-500 block text-[9px] font-bold">
+                                    تاريخ الانتهاء
+                                </span>
+
+                                <span class="font-extrabold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200 inline-block mt-0.5">
+                                    16 / 07 / 2029 م
+                                </span>
+                            </div>
+
+                            <div class="text-left font-inter">
+                                <span class="text-slate-500 block text-[9px] font-bold">
+                                    ID NO
+                                </span>
+
+                                <span class="font-mono font-bold text-slate-800 text-xs">
+                                    7001661086
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-back bg-gradient-to-br from-slate-900 via-slate-800 to-zinc-900 text-white border-2 border-slate-700 p-5 md:p-6 flex flex-col justify-between">
+
+                        <div>
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2 mb-3">
+                                <span class="text-xs font-bold text-saudi-gold flex items-center gap-1.5">
+                                    <i class="fa-solid fa-microchip"></i>
+                                    بيانات التفويض والمركبة
+                                </span>
+
+                                <span class="text-[10px] text-slate-400 font-mono">
+                                    VEHICLE DATA
+                                </span>
+                            </div>
+
+                            <div class="space-y-2.5 text-xs">
+
+                                <div class="bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+                                    <span class="text-[10px] text-slate-400 block font-bold">
+                                        المفوض له
+                                    </span>
+
+                                    <p class="font-bold text-emerald-400">
+                                        ديوان وزارة العدل
+                                    </p>
+                                </div>
+
+                                <div class="bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+                                    <span class="text-[10px] text-slate-400 block font-bold">
+                                        المسمى الوظيفي
+                                    </span>
+
+                                    <p class="font-bold text-emerald-300 leading-6">
+                                        أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي
+                                    </p>
+                                </div>
+
+                                <div class="bg-slate-800/80 p-2 rounded-lg border border-slate-700">
+                                    <span class="text-[10px] text-slate-400 block font-bold">
+                                        رقم الهوية
+                                    </span>
+
+                                    <p class="font-mono font-bold text-emerald-300 tracking-wider">
+                                        7001661086
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-3 rounded-xl flex flex-col items-center justify-center my-2 shadow-inner">
+                            <svg id="barcode" class="w-full max-h-14"></svg>
+
+                            <span class="text-[10px] font-mono text-slate-700 font-bold tracking-widest mt-1">
+                                56617001661086
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2">
+                            <span>
+                                الرمز الموحد: KSA-REG-5661
+                            </span>
+
+                            <span class="text-emerald-400 font-semibold">
+                                <i class="fa-solid fa-check-circle"></i>
+                                تم التحقق
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-print grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-lg">
+
+                <button onclick="copyToClipboard('7001661086', 'رقم الهوية')"
+                        class="p-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex flex-col items-center gap-1.5 transition">
+                    <i class="fa-regular fa-copy text-saudi-gold text-base"></i>
+                    نسخ رقم الهوية
+                </button>
+
+                <button onclick="copyToClipboard('ر ر ط 5661', 'رقم اللوحة')"
+                        class="p-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex flex-col items-center gap-1.5 transition">
+                    <i class="fa-solid fa-car text-emerald-400 text-base"></i>
+                    نسخ رقم اللوحة
+                </button>
+
+                <button onclick="copyToClipboard('16/07/2029', 'تاريخ الانتهاء')"
+                        class="col-span-2 sm:col-span-1 p-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex flex-col items-center gap-1.5 transition">
+                    <i class="fa-solid fa-calendar-days text-blue-400 text-base"></i>
+                    نسخ تاريخ الانتهاء
+                </button>
+            </div>
+
+            <div class="no-print w-full max-w-lg bg-slate-800/80 border border-slate-700 rounded-2xl p-4 space-y-3 backdrop-blur-sm">
+
+                <h4 class="text-xs font-bold text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-floppy-disk text-saudi-gold"></i>
+                    خيارات حفظ البطاقة:
+                </h4>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+
+                    <button onclick="downloadCardImage()"
+                            class="p-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-image"></i>
+                        حفظ كصورة PNG
+                    </button>
+
+                    <button onclick="downloadWalletFile()"
+                            class="p-2.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-code"></i>
+                        تحميل HTML
+                    </button>
+
+                    <button onclick="exportJSONData()"
+                            class="p-2.5 bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-code"></i>
+                        تحميل JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="action-buttons no-print">
+                <button onclick="flipCard()">
+                    <i class="fa-solid fa-rotate"></i>
+                    قلب البطاقة
+                </button>
+
+                <button onclick="downloadCardImage()">
+                    <i class="fa-solid fa-image"></i>
+                    تحميل صورة
+                </button>
+
+                <button onclick="downloadWalletFile()">
+                    <i class="fa-solid fa-download"></i>
+                    تحميل HTML
+                </button>
+
+                <button onclick="exportJSONData()">
+                    <i class="fa-solid fa-file-code"></i>
+                    تحميل البيانات
+                </button>
+            </div>
+        </section>
+
+        <section class="lg:col-span-5 space-y-6">
+
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 backdrop-blur-sm">
+
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                        حالة الاستمارة
+                    </h3>
+
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        سارية ومفتوحة
+                    </span>
+                </div>
+
+                <div class="bg-slate-900/80 rounded-xl p-4 border border-slate-800 grid grid-cols-3 gap-2 text-center">
+
+                    <div class="p-2 bg-slate-800/50 rounded-lg">
+                        <span id="daysLeft" class="block text-lg md:text-xl font-extrabold text-saudi-gold">
+                            --
+                        </span>
+                        <span class="text-[11px] text-slate-400">
+                            يوم متبقي
+                        </span>
+                    </div>
+
+                    <div class="p-2 bg-slate-800/50 rounded-lg">
+                        <span class="block text-lg md:text-xl font-extrabold text-emerald-400">
+                            2029
+                        </span>
+                        <span class="text-[11px] text-slate-400">
+                            سنة الانتهاء
+                        </span>
+                    </div>
+
+                    <div class="p-2 bg-slate-800/50 rounded-lg">
+                        <span class="block text-lg md:text-xl font-extrabold text-blue-400">
+                            100%
+                        </span>
+                        <span class="text-[11px] text-slate-400">
+                            صلاحية النظام
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 backdrop-blur-sm space-y-4">
+
+                <h3 class="text-base font-bold text-white border-b border-slate-700 pb-3 flex items-center justify-between">
+                    <span>
+                        <i class="fa-solid fa-list-check text-saudi-gold ml-2"></i>
+                        تفاصيل الاستمارة الكاملة
+                    </span>
+
+                    <button onclick="sharePass()"
+                            class="text-xs text-saudi-gold hover:underline">
+                        <i class="fa-solid fa-share-nodes ml-1"></i>
+                        مشاركة
+                    </button>
+                </h3>
+
+                <div class="space-y-3 text-sm">
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">المفوض له:</span>
+                        <span class="font-bold text-white text-left">
+                            ديوان وزارة العدل
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">الجهة:</span>
+                        <span class="font-bold text-white text-left">
+                            تشغيل قضائي لنيابات والمحاكم
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">رقم الهوية:</span>
+                        <span class="font-bold text-white font-mono">
+                            7001661086
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">المسمى الوظيفي:</span>
+                        <span class="font-bold text-white text-left">
+                            أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">المستفيد أو السائق:</span>
+                        <span class="font-bold text-white text-left">
+                            خالد بن فهد LEGAL AFFAIRS
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">نوع المركبة:</span>
+                        <span class="font-bold text-white">
+                            شيفرولية تاهو
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">الموديل:</span>
+                        <span class="font-bold text-white">
+                            2023
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">لون المركبة:</span>
+                        <span class="font-bold text-white">
+                            أسود
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5 border-b border-slate-700/50">
+                        <span class="text-slate-400">رقم اللوحة:</span>
+                        <span class="font-bold text-saudi-gold font-mono">
+                            ر ر ط 5661
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between gap-3 py-1.5">
+                        <span class="text-slate-400">تاريخ انتهاء الاستمارة:</span>
+                        <span class="font-bold text-red-400">
+                            16 / 07 / 2029
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-emerald-950/60 to-slate-900 border border-emerald-800/40 rounded-2xl p-4 flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-white">
+                            حفظ البطاقة
+                        </h4>
+
+                        <p class="text-[11px] text-slate-400">
+                            تحميل نسخة HTML على جهازك
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="downloadWalletFile()"
+                        class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-emerald-900/40">
+                    تحميل
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast"
+         class="fixed bottom-5 right-5 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs font-bold transition-all duration-300 translate-y-20 opacity-0 z-50">
+
+        <i class="fa-solid fa-circle-check text-base"></i>
+        <span id="toastMsg">تم التنفيذ بنجاح</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                if (typeof JsBarcode !== 'undefined') {
+                    JsBarcode('#barcode', '56617001661086', {
+                        format: 'CODE128',
+                        lineColor: '#1e293b',
+                        width: 2,
+                        height: 45,
+                        displayValue: false
+                    });
+                }
+            } catch (error) {
+                console.log('Barcode error:', error);
+            }
+
+            calculateExpiry();
+        });
+
+        function flipCard() {
+            const card = document.getElementById('cardInner');
+
+            if (card) {
+                card.classList.toggle('flipped');
+            }
+        }
+
+        function calculateExpiry() {
+            const expiryDate = new Date('2029-07-16T23:59:59');
+            const today = new Date();
+            const difference = expiryDate - today;
+            const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
+            const daysElement = document.getElementById('daysLeft');
+
+            if (daysElement) {
+                daysElement.innerText = days > 0 ? days : '0';
+            }
+        }
+
+        function copyToClipboard(text, title) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text)
+                    .then(function () {
+                        showToast('تم نسخ ' + title + ': ' + text);
+                    })
+                    .catch(function () {
+                        fallbackCopy(text, title);
+                    });
+            } else {
+                fallbackCopy(text, title);
+            }
+        }
+
+        function fallbackCopy(text, title) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                showToast('تم نسخ ' + title + ': ' + text);
+            } catch (error) {
+                showToast('تعذر النسخ تلقائيًا');
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMsg');
+
+            if (!toast || !toastMessage) {
+                return;
+            }
+
+            toastMessage.innerText = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(function () {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        function downloadCardImage() {
+            const card = document.querySelector('.card-front');
+
+            if (!card) {
+                showToast('لم يتم العثور على البطاقة');
+                return;
+            }
+
+            if (typeof html2canvas === 'undefined') {
+                showToast('لم يتم تحميل أداة الصورة، حاول مرة أخرى');
+                return;
+            }
+
+            showToast('جاري تجهيز صورة البطاقة');
+
+            html2canvas(card, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: null
+            })
+            .then(function (canvas) {
+                const link = document.createElement('a');
+
+                link.download = 'استمارة_مركبة_ر_ر_ط_5661.png';
+                link.href = canvas.toDataURL('image/png');
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showToast('تم حفظ صورة البطاقة بنجاح');
+            })
+            .catch(function () {
+                showToast('تعذر حفظ الصورة');
+            });
+        }
+
+        function downloadWalletFile() {
+            const htmlContent =
+                '<!DOCTYPE html>\n' +
+                document.documentElement.outerHTML;
+
+            const blob = new Blob(
+                [htmlContent],
+                { type: 'text/html;charset=utf-8' }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = 'استمارة_مركبة_ر_ر_ط_5661.html';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 1000);
+
+            showToast('تم تحميل ملف HTML');
+        }
+
+        function exportJSONData() {
+            const data = {
+                title: 'استمارة مركبة - المملكة العربية السعودية',
+                authorizedEntity: 'ديوان وزارة العدل',
+                department: 'تشغيل قضائي لنيابات والمحاكم',
+                identityNumber: '7001661086',
+                jobTitle: 'أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي',
+                beneficiary: 'خالد بن فهد LEGAL AFFAIRS',
+                vehicle: 'شيفرولية تاهو',
+                model: '2023',
+                color: 'أسود',
+                plateNumber: 'ر ر ط 5661',
+                expiryDate: '16/07/2029',
+                status: 'تم التحقق بنجاح'
+            };
+
+            const json = JSON.stringify(data, null, 2);
+
+            const blob = new Blob(
+                [json],
+                { type: 'application/json;charset=utf-8' }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = 'بيانات_المركبة_ر_ر_ط_5661.json';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 1000);
+
+            showToast('تم تحميل ملف البيانات JSON');
+        }
+
+        function sharePass() {
+            const shareText =
+                'استمارة مركبة\n' +
+                'المفوض له: ديوان وزارة العدل\n' +
+                'المركبة: شيفرولية تاهو 2023\n' +
+                'رقم اللوحة: ر ر ط 5661\n' +
+                'تاريخ الانتهاء: 16/07/2029';
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'استمارة مركبة',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(function () {});
+            } else {
+                copyToClipboard(window.location.href, 'رابط الاستمارة');
+            }
+        }
+    </script>
+</body>
+</html>
