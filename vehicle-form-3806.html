@@ -1,1 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>استمارة مركبة</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;600;700&display=swap"
+          rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <style>
+        :root {
+            --green: #006c35;
+            --dark-green: #004b25;
+            --gold: #c7a33a;
+            --navy: #10243a;
+            --light: #f4f7f9;
+            --border: #cbd5df;
+            --muted: #667585;
+            --red: #b42318;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(0,108,53,.16), transparent 30%),
+                linear-gradient(135deg, #0e1722, #1c2c3b);
+            color: #1b2733;
+            font-family: "Cairo", sans-serif;
+        }
+
+        .page {
+            width: min(100%, 930px);
+            margin: auto;
+            padding: 22px 15px 40px;
+        }
+
+        .official-header {
+            overflow: hidden;
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 18px 40px rgba(0,0,0,.22);
+        }
+
+        .header-top {
+            height: 12px;
+            background: linear-gradient(
+                to left,
+                var(--green) 0 42%,
+                var(--gold) 42% 58%,
+                var(--navy) 58% 100%
+            );
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 22px 25px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-emblem {
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--green);
+            border-radius: 50%;
+            color: var(--green);
+            font-size: 25px;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: var(--navy);
+            font-size: clamp(24px, 5vw, 37px);
+            font-weight: 900;
+        }
+
+        .header-content p {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .header-code {
+            direction: ltr;
+            text-align: left;
+            color: var(--navy);
+            font-family: Inter, sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1.8;
+        }
+
+        .demo-strip {
+            padding: 9px 15px;
+            background: #fff8e1;
+            color: #775b0c;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin: 17px auto;
+        }
+
+        .toolbar button,
+        .action-button {
+            min-height: 42px;
+            padding: 9px 14px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--green);
+            color: #fff;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .toolbar button:hover,
+        .action-button:hover {
+            background: var(--dark-green);
+            transform: translateY(-1px);
+        }
+
+        .toolbar .secondary {
+            background: #334155;
+        }
+
+        .card {
+            overflow: hidden;
+            border: 1px solid #aebdca;
+            border-radius: 18px;
+            background: var(--light);
+            box-shadow: 0 22px 50px rgba(0,0,0,.26);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 17px 23px;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .card-title h2 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .card-title span {
+            padding: 5px 9px;
+            border: 1px solid rgba(0,108,53,.3);
+            border-radius: 5px;
+            background: rgba(0,108,53,.09);
+            color: var(--green);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .form-body {
+            padding: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-field.full {
+            grid-column: span 2;
+        }
+
+        .form-field label {
+            color: #526170;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .form-field input,
+        .form-field select {
+            width: 100%;
+            height: 44px;
+            padding: 8px 11px;
+            border: 1px solid #b8c5d0;
+            border-radius: 8px;
+            outline: none;
+            background: #fff;
+            color: #172331;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(0,108,53,.12);
+        }
+
+        .plate-field {
+            grid-column: span 2;
+            padding: 15px;
+            border: 1px solid #e0c36a;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #fff9e7, #effaf3);
+        }
+
+        .plate-field input {
+            height: 58px;
+            border: 2px solid var(--gold);
+            color: var(--navy);
+            text-align: center;
+            font-size: 27px;
+            font-weight: 900;
+            letter-spacing: 7px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 24px 0 13px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--green);
+            color: var(--navy);
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .section-heading i {
+            color: var(--green);
+        }
+
+        .status-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 11px;
+            margin-top: 17px;
+        }
+
+        .status-box {
+            padding: 13px 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .status-box strong {
+            display: block;
+            color: var(--green);
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .status-box span {
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .barcode-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-top: 21px;
+            padding: 17px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .barcode-text {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1.9;
+        }
+
+        .barcode-text strong {
+            display: block;
+            color: var(--navy);
+            font-size: 13px;
+        }
+
+        #barcode {
+            width: 270px;
+            max-width: 48%;
+            height: 64px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 18px;
+        }
+
+        .copy-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 13px;
+        }
+
+        .copy-button {
+            min-height: 58px;
+            border: 1px solid #475569;
+            border-radius: 10px;
+            background: #253548;
+            color: #fff;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .copy-button i {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--gold);
+            font-size: 16px;
+        }
+
+        .footer-note {
+            margin-top: 17px;
+            padding: 13px 15px;
+            border: 1px solid rgba(234,210,138,.65);
+            border-radius: 11px;
+            background: rgba(255,248,231,.12);
+            color: #f6df9b;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .toast {
+            position: fixed;
+            right: 17px;
+            bottom: 17px;
+            z-index: 20;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: #059669;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            opacity: 0;
+            transform: translateY(70px);
+            pointer-events: none;
+            transition: .3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 650px) {
+            .page {
+                padding: 12px 9px 28px;
+            }
+
+            .header-content {
+                align-items: flex-start;
+                padding: 17px 15px;
+            }
+
+            .header-emblem {
+                width: 43px;
+                height: 43px;
+                font-size: 18px;
+            }
+
+            .header-content h1 {
+                font-size: 23px;
+            }
+
+            .header-content p {
+                font-size: 10px;
+            }
+
+            .header-code {
+                display: none;
+            }
+
+            .form-body {
+                padding: 14px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 11px;
+            }
+
+            .form-field.full,
+            .plate-field {
+                grid-column: span 1;
+            }
+
+            .plate-field input {
+                font-size: 20px;
+                letter-spacing: 4px;
+            }
+
+            .status-row {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+
+            .status-box {
+                padding: 10px 4px;
+            }
+
+            .status-box strong {
+                font-size: 14px;
+            }
+
+            .status-box span {
+                font-size: 8px;
+            }
+
+            .barcode-area {
+                display: block;
+                text-align: center;
+            }
+
+            .barcode-text {
+                margin-bottom: 8px;
+            }
+
+            #barcode {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .copy-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .copy-button:last-child {
+                grid-column: span 2;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+
+            .no-print,
+            .toolbar,
+            .actions,
+            .copy-buttons,
+            .footer-note {
+                display: none !important;
+            }
+
+            .page {
+                width: 100%;
+                padding: 0;
+            }
+
+            .official-header,
+            .card {
+                box-shadow: none;
+            }
+
+            .official-header {
+                border: 1px solid #999;
+            }
+
+            .card {
+                margin-top: 20px;
+                border: 1px solid #999;
+            }
+
+            .form-field input,
+            .form-field select {
+                border: 0;
+                border-bottom: 1px solid #999;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="page">
+
+        <header class="official-header no-print">
+            <div class="header-top"></div>
+
+            <div class="header-content">
+
+                <div class="header-title">
+                    <div class="header-emblem">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+
+                    <div>
+                        <h1>استمارة مركبة</h1>
+                        <p>نموذج إدخال وعرض بيانات المركبة</p>
+                    </div>
+                </div>
+
+                <div class="header-code">
+                    VEHICLE FORM<br>
+                    FORM-2026
+                </div>
+
+            </div>
+
+            <div class="demo-strip">
+                نموذج إلكتروني تجريبي — لا يمثل مستندًا حكوميًا أو وثيقة رسمية
+            </div>
+        </header>
+
+        <div class="toolbar no-print">
+
+            <button type="button" onclick="window.print()">
+                <i class="fa-solid fa-print"></i>
+                طباعة
+            </button>
+
+            <button type="button" onclick="saveData()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                حفظ البيانات
+            </button>
+
+            <button type="button" onclick="clearForm()" class="secondary">
+                <i class="fa-solid fa-rotate-left"></i>
+                إعادة ضبط
+            </button>
+
+        </div>
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>بيانات استمارة المركبة</h2>
+                <span>نموذج عرض</span>
+            </div>
+
+            <div class="form-body">
+
+                <div class="section-heading">
+                    <i class="fa-solid fa-user-tie"></i>
+                    بيانات المستفيد والجهة
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-field">
+                        <label for="authorizedEntity">
+                            الجهة المفوضة
+                        </label>
+
+                        <input id="authorizedEntity"
+                               value="جهة تشغيلية">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="beneficiary">
+                            المستفيد أو السائق
+                        </label>
+
+                        <input id="beneficiary"
+                               value="خالد بن فهد">
+                    </div>
+
+                    <div class="form-field full">
+                        <label for="jobTitle">
+                            المسمى الوظيفي
+                        </label>
+
+                        <input id="jobTitle"
+                               value="أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="identityNumber">
+                            رقم الهوية
+                        </label>
+
+                        <input id="identityNumber"
+                               value="7001661086"
+                               inputmode="numeric">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="department">
+                            القسم
+                        </label>
+
+                        <input id="department"
+                               value="العمليات القانونية">
+                    </div>
+
+                </div>
+
+                <div class="section-heading">
+                    <i class="fa-solid fa-car-side"></i>
+                    بيانات المركبة
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="plate-field">
+                        <label class="field-label">
+                            رقم اللوحة
+                        </label>
+
+                        <input id="plateNumber"
+                               value="ر ر ط 5661">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="vehicleType">
+                            نوع المركبة
+                        </label>
+
+                        <input id="vehicleType"
+                               value="شيفرولية تاهو">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="model">
+                            الموديل
+                        </label>
+
+                        <input id="model"
+                               value="2023">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="color">
+                            اللون
+                        </label>
+
+                        <input id="color"
+                               value="أسود">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="expiryDate">
+                            تاريخ انتهاء الاستمارة
+                        </label>
+
+                        <input id="expiryDate"
+                               type="date"
+                               value="2029-07-16">
+                    </div>
+
+                </div>
+
+                <div class="status-row">
+
+                    <div class="status-box">
+                        <strong id="daysLeft">--</strong>
+                        <span>يوم متبقٍ</span>
+                    </div>
+
+                    <div class="status-box">
+                        <strong id="expiryYear">2029</strong>
+                        <span>سنة الانتهاء</span>
+                    </div>
+
+                    <div class="status-box">
+                        <strong>100%</strong>
+                        <span>اكتمال البيانات</span>
+                    </div>
+
+                </div>
+
+                <div class="barcode-area">
+
+                    <div class="barcode-text">
+                        <strong>رمز بيانات المركبة</strong>
+                        رقم اللوحة والهوية يستخدمان لإنشاء رمز العرض فقط.
+                    </div>
+
+                    <svg id="barcode"></svg>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="actions no-print">
+
+            <button class="action-button" type="button" onclick="updateData()">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                تحديث البيانات
+            </button>
+
+            <button class="action-button" type="button" onclick="downloadJSON()">
+                <i class="fa-solid fa-file-code"></i>
+                تحميل JSON
+            </button>
+
+        </div>
+
+        <div class="copy-buttons no-print">
+
+            <button class="copy-button"
+                    type="button"
+                    onclick="copyValue('identityNumber','رقم الهوية')">
+                <i class="fa-regular fa-copy"></i>
+                نسخ رقم الهوية
+            </button>
+
+            <button class="copy-button"
+                    type="button"
+                    onclick="copyValue('plateNumber','رقم اللوحة')">
+                <i class="fa-solid fa-car"></i>
+                نسخ رقم اللوحة
+            </button>
+
+            <button class="copy-button"
+                    type="button"
+                    onclick="copyValue('expiryDate','تاريخ الانتهاء')">
+                <i class="fa-solid fa-calendar-days"></i>
+                نسخ تاريخ الانتهاء
+            </button>
+
+        </div>
+
+        <div class="footer-note no-print">
+            تنبيه: هذه الصفحة تصميم تجريبي لعرض بيانات المركبة،
+            ولا تُعد استمارة حكومية أو وثيقة رسمية أو إثبات ملكية.
+        </div>
+
+        <footer class="footer-note no-print">
+            Vehicle Form — Demo Page
+        </footer>
+
+    </main>
+
+    <div id="toast" class="toast">
+        <span id="toastText">تم التنفيذ</span>
+    </div>
+
+    <script>
+        const fields = [
+            "authorizedEntity",
+            "beneficiary",
+            "jobTitle",
+            "identityNumber",
+            "department",
+            "plateNumber",
+            "vehicleType",
+            "model",
+            "color",
+            "expiryDate"
+        ];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            updateData();
+        });
+
+        function getValue(id) {
+            const element = document.getElementById(id);
+            return element ? element.value.trim() : "";
+        }
+
+        function updateData() {
+            const plate = getValue("plateNumber");
+            const identity = getValue("identityNumber");
+            const expiry = getValue("expiryDate");
+
+            const barcodeValue =
+                (plate + identity)
+                .replace(/\s/g, "")
+                .replace(/[^\u0000-\u007F]/g, "5661");
+
+            if (typeof JsBarcode !== "undefined") {
+                try {
+                    JsBarcode("#barcode", barcodeValue || "56617001661086", {
+                        format: "CODE128",
+                        lineColor: "#1e293b",
+                        width: 2,
+                        height: 55,
+                        displayValue: true,
+                        fontSize: 11,
+                        margin: 0
+                    });
+                } catch (error) {
+                    console.log("Barcode error:", error);
+                }
+            }
+
+            calculateDays(expiry);
+            showToast("تم تحديث البيانات");
+        }
+
+        function calculateDays(expiryValue) {
+            const daysElement = document.getElementById("daysLeft");
+            const yearElement = document.getElementById("expiryYear");
+
+            if (!expiryValue) {
+                daysElement.innerText = "--";
+                yearElement.innerText = "--";
+                return;
+            }
+
+            const expiry = new Date(expiryValue + "T23:59:59");
+            const today = new Date();
+            const difference = expiry - today;
+            const days = Math.ceil(
+                difference / (1000 * 60 * 60 * 24)
+            );
+
+            daysElement.innerText = days > 0 ? days : "0";
+            yearElement.innerText = expiry.getFullYear();
+        }
+
+        function copyValue(id, label) {
+            const value = getValue(id);
+
+            if (
+                navigator.clipboard &&
+                window.isSecureContext
+            ) {
+                navigator.clipboard.writeText(value)
+                    .then(function () {
+                        showToast("تم نسخ " + label);
+                    })
+                    .catch(function () {
+                        fallbackCopy(value, label);
+                    });
+            } else {
+                fallbackCopy(value, label);
+            }
+        }
+
+        function fallbackCopy(value, label) {
+            const textarea = document.createElement("textarea");
+
+            textarea.value = value;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try {
+                document.execCommand("copy");
+                showToast("تم نسخ " + label);
+            } catch (error) {
+                showToast("تعذر النسخ");
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        function saveData() {
+            const data = collectData();
+
+            localStorage.setItem(
+                "vehicleFormData",
+                JSON.stringify(data)
+            );
+
+            showToast("تم حفظ البيانات على الجهاز");
+        }
+
+        function collectData() {
+            const data = {};
+
+            fields.forEach(function (id) {
+                data[id] = getValue(id);
+            });
+
+            data.pageType = "نموذج استمارة مركبة تجريبي";
+            data.status = "غير رسمي";
+
+            return data;
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem("vehicleFormData");
+
+            if (!saved) {
+                return;
+            }
+
+            try {
+                const data = JSON.parse(saved);
+
+                fields.forEach(function (id) {
+                    const element = document.getElementById(id);
+
+                    if (element && data[id] !== undefined) {
+                        element.value = data[id];
+                    }
+                });
+
+                updateData();
+            } catch (error) {
+                console.log("Load error:", error);
+            }
+        }
+
+        function clearForm() {
+            localStorage.removeItem("vehicleFormData");
+
+            document.getElementById("authorizedEntity").value =
+                "جهة تشغيلية";
+
+            document.getElementById("beneficiary").value =
+                "خالد بن فهد";
+
+            document.getElementById("jobTitle").value =
+                "أخصائي قانوني أول | العمليات القانونية والتمثيل النظامي";
+
+            document.getElementById("identityNumber").value =
+                "7001661086";
+
+            document.getElementById("department").value =
+                "العمليات القانونية";
+
+            document.getElementById("plateNumber").value =
+                "ر ر ط 5661";
+
+            document.getElementById("vehicleType").value =
+                "شيفرولية تاهو";
+
+            document.getElementById("model").value =
+                "2023";
+
+            document.getElementById("color").value =
+                "أسود";
+
+            document.getElementById("expiryDate").value =
+                "2029-07-16";
+
+            updateData();
+            showToast("تمت إعادة ضبط البيانات");
+        }
+
+        function downloadJSON() {
+            const data = collectData();
+            const json = JSON.stringify(data, null, 2);
+
+            const blob = new Blob(
+                [json],
+                {
+                    type: "application/json;charset=utf-8"
+                }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "vehicle-form-data.json";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(function () {
+                URL.revokeObjectURL(url);
+            }, 1000);
+
+            showToast("تم تحميل ملف JSON");
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            const text = document.getElementById("toastText");
+
+            text.innerText = message;
+            toast.classList.add("show");
+
+            setTimeout(function () {
+                toast.classList.remove("show");
+            }, 2800);
+        }
+
+        window.addEventListener("load", function () {
+            loadData();
+        });
+    </script>
+
+</body>
+</html>
