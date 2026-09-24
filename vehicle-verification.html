@@ -1,1 +1,620 @@
 
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>التحقق من بيانات المركبة</title>
+
+    <meta name="description"
+          content="صفحة عرض تجريبية للتحقق من بيانات مركبة">
+
+    <style>
+        :root {
+            --background: #f5f1e9;
+            --surface: #fffdf8;
+            --surface-2: #f8faf8;
+            --line: #d8d2c8;
+            --text: #17231e;
+            --muted: #6a746e;
+            --green: #14563f;
+            --green-dark: #0c382a;
+            --gold: #b49342;
+            --success: #1d6b45;
+            --warning-bg: #fff8df;
+            --warning-line: #e3c879;
+            --danger: #9f2c2c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 18px;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(20, 86, 63, .13),
+                    transparent 33%
+                ),
+                linear-gradient(
+                    180deg,
+                    #f8f4ed,
+                    #eee6d8
+                );
+            color: var(--text);
+            font-family: Tahoma, Arial, sans-serif;
+        }
+
+        .container {
+            width: min(850px, 100%);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, .09);
+            border-radius: 28px;
+            background: var(--surface);
+            box-shadow: 0 22px 65px rgba(25, 45, 34, .13);
+        }
+
+        .top-line {
+            height: 10px;
+            background:
+                linear-gradient(
+                    to left,
+                    var(--green) 0 43%,
+                    var(--gold) 43% 57%,
+                    var(--green-dark) 57% 100%
+                );
+        }
+
+        .header {
+            padding: 28px 25px 24px;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--green-dark),
+                    var(--green)
+                );
+            color: #fff;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .title-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .icon {
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, .65);
+            border-radius: 50%;
+            font-size: 27px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(25px, 6vw, 41px);
+            font-weight: 900;
+        }
+
+        .subtitle {
+            margin: 7px 0 0;
+            color: rgba(255, 255, 255, .87);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .reference {
+            direction: ltr;
+            text-align: left;
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.8;
+            opacity: .9;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 13px 15px;
+            border: 1px solid var(--warning-line);
+            border-radius: 14px;
+            background: var(--warning-bg);
+            color: #72570b;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .body {
+            padding: 24px;
+        }
+
+        .status {
+            padding: 17px 18px;
+            border: 1px dashed #b9d4c1;
+            border-radius: 17px;
+            background: #f2faf4;
+            color: #245438;
+            font-size: 17px;
+            line-height: 1.9;
+        }
+
+        .status strong {
+            color: var(--success);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 25px 0 13px;
+            padding-bottom: 9px;
+            border-bottom: 2px solid var(--green);
+            color: var(--green-dark);
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 13px;
+        }
+
+        .item {
+            padding: 16px 17px;
+            border: 1px solid var(--line);
+            border-radius: 17px;
+            background: #fff;
+        }
+
+        .item.full {
+            grid-column: 1 / -1;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .value {
+            color: var(--text);
+            font-size: 18px;
+            font-weight: 900;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .plate {
+            border-color: #dfc877;
+            background:
+                linear-gradient(
+                    135deg,
+                    #fffbea,
+                    #f0faf3
+                );
+        }
+
+        .plate .value {
+            color: var(--green-dark);
+            font-size: 26px;
+            letter-spacing: 5px;
+        }
+
+        .vehicle-box {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 13px;
+            margin-top: 13px;
+        }
+
+        .vehicle-card {
+            padding: 16px 17px;
+            border: 1px solid var(--line);
+            border-radius: 17px;
+            background: var(--surface-2);
+        }
+
+        .vehicle-card .label {
+            margin-bottom: 5px;
+        }
+
+        .vehicle-card .value {
+            font-size: 17px;
+        }
+
+        .footer {
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.9;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 18px;
+        }
+
+        button {
+            min-height: 43px;
+            padding: 9px 15px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--green);
+            color: #fff;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--green-dark);
+        }
+
+        button.secondary {
+            background: #475569;
+        }
+
+        .toast {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 10;
+            padding: 11px 14px;
+            border-radius: 10px;
+            background: #087443;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            opacity: 0;
+            transform: translateY(60px);
+            pointer-events: none;
+            transition: .25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 9px;
+            }
+
+            .header {
+                padding: 20px 16px;
+            }
+
+            .header-row {
+                align-items: flex-start;
+            }
+
+            .header-content {
+                min-width: 0;
+            }
+
+            .icon {
+                width: 43px;
+                height: 43px;
+                font-size: 19px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .subtitle {
+                font-size: 11px;
+            }
+
+            .reference {
+                display: none;
+            }
+
+            .body {
+                padding: 15px;
+            }
+
+            .status {
+                font-size: 14px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .item.full {
+                grid-column: auto;
+            }
+
+            .vehicle-box {
+                grid-template-columns: 1fr;
+            }
+
+            .plate .value {
+                font-size: 21px;
+                letter-spacing: 3px;
+            }
+        }
+
+        @media print {
+            body {
+                display: block;
+                padding: 0;
+                background: #fff;
+            }
+
+            .container {
+                width: 100%;
+                border: 1px solid #999;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .buttons {
+                display: none;
+            }
+
+            .notice {
+                color: #222;
+                background: #fff;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <div class="top-line"></div>
+
+        <header class="header">
+
+            <div class="header-row">
+
+                <div class="title-area">
+
+                    <div class="icon">
+                        🚗
+                    </div>
+
+                    <div>
+                        <h1>بيانات المركبة</h1>
+
+                        <p class="subtitle">
+                            صفحة عرض تجريبية لبيانات استمارة المركبة
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="reference">
+                    VEHICLE DATA<br>
+                    DEMO PAGE
+                </div>
+
+            </div>
+
+            <div class="notice">
+                هذه الصفحة نموذج عرض تجريبي فقط، وليست وثيقة حكومية
+                ولا تمثل نظام تحقق رسميًا.
+            </div>
+
+        </header>
+
+        <section class="body">
+
+            <div class="status">
+                <strong>حالة العرض:</strong>
+                تم تحميل بيانات المركبة بنجاح ضمن نموذج تجريبي.
+            </div>
+
+            <h2 class="section-title">
+                بيانات المالك والمستخدم
+            </h2>
+
+            <div class="grid">
+
+                <div class="item">
+                    <span class="label">مالك المركبة</span>
+                    <div class="value">النيابة العامة بحائل</div>
+                </div>
+
+                <div class="item">
+                    <span class="label">المستخدم الفعلي</span>
+                    <div class="value">خالد فهد الهاجري</div>
+                </div>
+
+                <div class="item full">
+                    <span class="label">نوع الاستخدام</span>
+                    <div class="value">استخدام خاص — نموذج عرض</div>
+                </div>
+
+            </div>
+
+            <h2 class="section-title">
+                بيانات المركبة
+            </h2>
+
+            <div class="grid">
+
+                <div class="item plate">
+                    <span class="label">رقم اللوحة</span>
+                    <div class="value">ر ك ن 3806</div>
+                </div>
+
+                <div class="item">
+                    <span class="label">الرقم التسلسلي</span>
+                    <div class="value">1013017909</div>
+                </div>
+
+                <div class="item">
+                    <span class="label">نوع المركبة</span>
+                    <div class="value">هيونداي اكسنت</div>
+                </div>
+
+                <div class="item">
+                    <span class="label">اللون</span>
+                    <div class="value">أبيض</div>
+                </div>
+
+                <div class="item">
+                    <span class="label">سنة الصنع</span>
+                    <div class="value">2023</div>
+                </div>
+
+                <div class="item">
+                    <span class="label">تاريخ انتهاء البيانات</span>
+                    <div class="value">16 / 07 / 2029</div>
+                </div>
+
+            </div>
+
+            <h2 class="section-title">
+                المواصفات الفنية
+            </h2>
+
+            <div class="vehicle-box">
+
+                <div class="vehicle-card">
+                    <span class="label">رقم الهيكل VIN</span>
+                    <div class="value">91283830136-043327902</div>
+                </div>
+
+                <div class="vehicle-card">
+                    <span class="label">رقم المحرك</span>
+                    <div class="value">200007590142111900</div>
+                </div>
+
+                <div class="vehicle-card">
+                    <span class="label">الرقم الإضافي</span>
+                    <div class="value">012315267431</div>
+                </div>
+
+                <div class="vehicle-card">
+                    <span class="label">رمز النموذج</span>
+                    <div class="value">DEMO-VEHICLE-3806</div>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+
+                <button type="button" onclick="window.print()">
+                    طباعة الصفحة
+                </button>
+
+                <button type="button"
+                        class="secondary"
+                        onclick="copyPlate()">
+                    نسخ رقم اللوحة
+                </button>
+
+            </div>
+
+            <div class="footer">
+                هذه الصفحة مخصصة لعرض بيانات استمارة مركبة بشكل تجريبي،
+                ولا تصلح للإثبات أو الاعتماد لدى أي جهة.
+            </div>
+
+        </section>
+
+    </main>
+
+    <div id="toast" class="toast">
+        تم نسخ رقم اللوحة
+    </div>
+
+    <script>
+        function copyPlate() {
+            const plate = "ر ك ن 3806";
+
+            if (
+                navigator.clipboard &&
+                window.isSecureContext
+            ) {
+                navigator.clipboard.writeText(plate)
+                    .then(function () {
+                        showToast();
+                    })
+                    .catch(function () {
+                        fallbackCopy(plate);
+                    });
+            } else {
+                fallbackCopy(plate);
+            }
+        }
+
+        function fallbackCopy(value) {
+            const textarea = document.createElement("textarea");
+
+            textarea.value = value;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            try {
+                document.execCommand("copy");
+                showToast();
+            } catch (error) {
+                alert("تعذر نسخ رقم اللوحة");
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        function showToast() {
+            const toast = document.getElementById("toast");
+
+            toast.classList.add("show");
+
+            setTimeout(function () {
+                toast.classList.remove("show");
+            }, 2500);
+        }
+    </script>
+
+</body>
+
+</html>
